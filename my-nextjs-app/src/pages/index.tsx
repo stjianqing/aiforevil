@@ -14,6 +14,8 @@ export const Home: React.FC = () => {
   const [longitude, setLongitude] = useState(0);
   const [date, setDate] = useState(0);
   const [cropped, setCropped] = useState(false);
+  const [croppedCoords, setCroppedCoords] = useState({"x1":0, "y1": 0, "x2": 0, "y2":0});
+ 
 
   function handleLatitudeChange(e) {
     setLatitude(e.target.value);
@@ -28,9 +30,20 @@ export const Home: React.FC = () => {
 
   const getCropData = () => {
     if (typeof cropperRef.current?.cropper !== "undefined") {
-      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+      console.log(typeof(cropperRef.current?.cropper.getCanvasData()));
+      const coords =({
+        "x1": cropperRef.current?.cropper.getCropBoxData().left/cropperRef.current?.cropper.getContainerData().width,
+        "y1": cropperRef.current?.cropper.getCropBoxData().top/cropperRef.current?.cropper.getContainerData().height,
+        "x2": (cropperRef.current?.cropper.getCropBoxData().left+cropperRef.current?.cropper.getCropBoxData().width)/cropperRef.current?.cropper.getContainerData().width,
+        "y2": (cropperRef.current?.cropper.getCropBoxData().top-cropperRef.current?.cropper.getCropBoxData().height)/cropperRef.current?.cropper.getContainerData().height});
+      setCroppedCoords(coords);
+      console.log(croppedCoords);
+      
+      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());      
     }
     setCropped(true);
+
+    
   };
 
   return (
