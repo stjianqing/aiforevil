@@ -1,125 +1,143 @@
+from typing import Any
 from google.oauth2 import service_account
-
+import ee
+from google.cloud import storage
+import time
+from datetime import datetime, timedelta
 
 SERVICE_ACCOUNT_FILE = r'C:\Users\stjia\Desktop\Coding\Work\aiforevil\S2cloudless\service_account.json'
-import ee
-service_account = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
-credentials = ee.ServiceAccountCredentials(service_account, SERVICE_ACCOUNT_FILE)
+service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
+credentials = ee.ServiceAccountCredentials(service_account_email, SERVICE_ACCOUNT_FILE)
 ee.Initialize(credentials)
 
-AOI = ee.Geometry.Point(-122.269, 45.701)
-START_DATE = '2020-06-01'
-END_DATE = '2020-09-01'
-CLOUD_FILTER = 60
-CLD_PRB_THRESH = 40
-NIR_DRK_THRESH = 0.15
-CLD_PRJ_DIST = 2
-BUFFER = 100
 
-def get_s2_sr_cld_col(aoi, start_date, end_date):
-    # Import and filter S2 SR.
-    s2_sr_col = (ee.ImageCollection('COPERNICUS/S2_SR')
-        .filterBounds(aoi)
-        .filterDate(start_date, end_date)
-        .filter(ee.Filter.lte('CLOUDY_PIXEL_PERCENTAGE', CLOUD_FILTER)))
-
-    # Import and filter s2cloudless.
-    s2_cloudless_col = (ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY')
-        .filterBounds(aoi)
-        .filterDate(start_date, end_date))
-
-    # Join the filtered s2cloudless collection to the SR collection by the 'system:index' property.
-    return ee.ImageCollection(ee.Join.saveFirst('s2cloudless').apply(**{
-        'primary': s2_sr_col,
-        'secondary': s2_cloudless_col,
-        'condition': ee.Filter.equals(**{
-            'leftField': 'system:index',
-            'rightField': 'system:index'
-        })
-    }))
+class AntiCloudProgram:
+    
+    def __init__(self, START_DATE, END_DATE, AOI=None):
 
 
-s2_sr_cld_col = get_s2_sr_cld_col(AOI, START_DATE, END_DATE)
-
-def apply_cld_shdw_mask(img):
-    # Subset the cloudmask band and invert it so clouds/shadow are 0, else 1.
-    not_cld_shdw = img.select('cloudmask').Not()
-
-    # Subset reflectance bands and update their masks, return the result.
-    return img.select('B.*').updateMask(not_cld_shdw)
-
-def add_cloud_bands(img):
-    # Get s2cloudless image, subset the probability band.
-    cld_prb = ee.Image(img.get('s2cloudless')).select('probability')
-
-    # Condition s2cloudless by the probability threshold value.
-    is_cloud = cld_prb.gt(CLD_PRB_THRESH).rename('clouds')
-
-    # Add the cloud probability layer and cloud mask as image bands.
-    return img.addBands(ee.Image([cld_prb, is_cloud]))
-def add_shadow_bands(img):
-    # Identify water pixels from the SCL band.
-    not_water = img.select('SCL').neq(6)
-
-    # Identify dark NIR pixels that are not water (potential cloud shadow pixels).
-    SR_BAND_SCALE = 1e4
-    dark_pixels = img.select('B8').lt(NIR_DRK_THRESH*SR_BAND_SCALE).multiply(not_water).rename('dark_pixels')
-
-    # Determine the direction to project cloud shadow from clouds (assumes UTM projection).
-    shadow_azimuth = ee.Number(90).subtract(ee.Number(img.get('MEAN_SOLAR_AZIMUTH_ANGLE')));
-
-    # Project shadows from clouds for the distance specified by the CLD_PRJ_DIST input.
-    cld_proj = (img.select('clouds').directionalDistanceTransform(shadow_azimuth, CLD_PRJ_DIST*10)
-        .reproject(**{'crs': img.select(0).projection(), 'scale': 100})
-        .select('distance')
-        .mask()
-        .rename('cloud_transform'))
-
-    # Identify the intersection of dark pixels with cloud shadow projection.
-    shadows = cld_proj.multiply(dark_pixels).rename('shadows')
-
-    # Add dark pixels, cloud projection, and identified shadows as image bands.
-    return img.addBands(ee.Image([dark_pixels, cld_proj, shadows]))
-
-def add_cld_shdw_mask(img):
-    # Add cloud component bands.
-    img_cloud = add_cloud_bands(img)
-
-    # Add cloud shadow component bands.
-    img_cloud_shadow = add_shadow_bands(img_cloud)
-
-    # Combine cloud and shadow mask, set cloud and shadow as value 1, else 0.
-    is_cld_shdw = img_cloud_shadow.select('clouds').add(img_cloud_shadow.select('shadows')).gt(0)
-
-    # Remove small cloud-shadow patches and dilate remaining pixels by BUFFER input.
-    # 20 m scale is for speed, and assumes clouds don't require 10 m precision.
-    is_cld_shdw = (is_cld_shdw.focalMin(2).focalMax(BUFFER*2/20)
-        .reproject(**{'crs': img.select([0]).projection(), 'scale': 20})
-        .rename('cloudmask'))
-
-    # Add the final cloud-shadow mask to the image.
-    return img_cloud_shadow.addBands(is_cld_shdw)
+        self.SERVICE_ACCOUNT_FILE = r'C:\Users\stjia\Desktop\Coding\Work\aiforevil\S2cloudless\service_account.json'
+        self.service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
 
 
 
-s2_sr_median = (s2_sr_cld_col.map(add_cld_shdw_mask)
-                             .map(apply_cld_shdw_mask)
-                             .median())
+        self.START_DATE = START_DATE
+        self.END_DATE = END_DATE
+        self.AOI = AOI if AOI is not None else ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39)  #cuc phuong forest bounding box
+        self.CLOUD_FILTER = 50
+        self.CLD_PRB_THRESH = 40
+        self.NIR_DRK_THRESH = 0.15
+        self.CLD_PRJ_DIST = 2
+        self.BUFFER = 100
 
-# Define the export region
-export_region = s2_sr_median.geometry()
+        self.s2_sr_median=None
 
-# Define export parameters
-export_params = {
-    'image': s2_sr_median,
-    'description': 's2_sr_median_export',
-    'scale': 10,  # Set the scale (resolution) you want
-    'region': export_region.getInfo()['coordinates'],  # Convert the region to a list
-    'fileFormat': 'GeoTIFF',  # Choose the desired format
-}
+    def getattribute(self, __name: str):
+        print(super().__getattribute__(__name))
 
-# Generate the download URL
-download_url = s2_sr_median.getDownloadURL(export_params)
 
-# Print the URL (you can copy and paste it into your web browser)
-print('Download URL:', download_url)
+    def get_s2_sr_cld_col(self):
+
+        s2_sr_col = (ee.ImageCollection('COPERNICUS/S2_SR')
+            .filterBounds(self.AOI)
+            .filterDate(self.START_DATE, self.END_DATE)
+            .filter(ee.Filter.lte('CLOUDY_PIXEL_PERCENTAGE', self.CLOUD_FILTER)))
+
+        s2_cloudless_col = (ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY')
+            .filterBounds(self.AOI)
+            .filterDate(self.START_DATE, self.END_DATE))
+
+
+        return ee.ImageCollection(ee.Join.saveFirst('s2cloudless').apply(**{
+            'primary': s2_sr_col,
+            'secondary': s2_cloudless_col,
+            'condition': ee.Filter.equals(**{
+                'leftField': 'system:index',
+                'rightField': 'system:index'
+            })
+        }))
+
+
+
+    def apply_cld_shdw_mask(self,img):
+        not_cld_shdw = img.select('cloudmask').Not()
+        return img.select('B.*').updateMask(not_cld_shdw)
+
+    def add_cloud_bands(self,img):
+        cld_prb = ee.Image(img.get('s2cloudless')).select('probability')
+
+        is_cloud = cld_prb.gt(self.CLD_PRB_THRESH).rename('clouds')
+
+        return img.addBands(ee.Image([cld_prb, is_cloud]))
+
+    def add_shadow_bands(self,img):
+
+        not_water = img.select('SCL').neq(6)
+
+        SR_BAND_SCALE = 1e4
+        dark_pixels = img.select('B8').lt(self.NIR_DRK_THRESH*SR_BAND_SCALE).multiply(not_water).rename('dark_pixels')
+
+        shadow_azimuth = ee.Number(90).subtract(ee.Number(img.get('MEAN_SOLAR_AZIMUTH_ANGLE')));
+
+        cld_proj = (img.select('clouds').directionalDistanceTransform(shadow_azimuth, self.CLD_PRJ_DIST*10)
+            .reproject(**{'crs': img.select(0).projection(), 'scale': 100})
+            .select('distance')
+            .mask()
+            .rename('cloud_transform'))
+
+        shadows = cld_proj.multiply(dark_pixels).rename('shadows')
+
+        return img.addBands(ee.Image([dark_pixels, cld_proj, shadows]))
+
+    def add_cld_shdw_mask(self,img):
+
+        img_cloud = self.add_cloud_bands(img)
+        img_cloud_shadow = self.add_shadow_bands(img_cloud)
+
+        is_cld_shdw = img_cloud_shadow.select('clouds').add(img_cloud_shadow.select('shadows')).gt(0)
+
+        is_cld_shdw = (is_cld_shdw.focalMin(2).focalMax(self.BUFFER*2/20)
+            .reproject(**{'crs': img.select([0]).projection(), 'scale': 20})
+            .rename('cloudmask'))
+        return img_cloud_shadow.addBands(is_cld_shdw)
+
+
+
+    def export_to_cloud_storage(self):
+        s2_sr_cld_col = self.get_s2_sr_cld_col()
+        s2_sr_median = (s2_sr_cld_col.map(self.add_cld_shdw_mask)
+                                     .map(self.apply_cld_shdw_mask)
+                                     .median())
+        
+
+        export_params = {
+            'image': s2_sr_median,
+            'description': 's2_sr_median_export',  # Export name
+            'bucket': 'aiforevil',
+            'scale': 10,  # Resolution in meters per pixel
+            'region': self.AOI.getInfo()['coordinates'],  # Convert the region geometry to coordinates
+            'fileFormat': 'GeoTIFF',  # Export format
+        }
+
+        task = ee.batch.Export.image.toCloudStorage(**export_params)
+        task.start()
+
+        while task.active():
+            print("Exporting... (task ID: {})".format(task.id))
+            time.sleep(30)
+        if task.status()['state'] == 'COMPLETED':
+            print("Export completed. The image is in your Google Cloud Storage bucket.")
+        else:
+            print("Export failed")
+          
+
+if __name__ == '__main__':
+    service_account_file = r'C:\Users\stjia\Desktop\Coding\Work\aiforevil\S2cloudless\service_account.json'
+    bucket_name = "aiforevil"
+    aoi = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39)
+    start_date = '2020-06-01'
+    end_date = '2020-09-01'
+
+    
+    exporter = AntiCloudProgram(start_date, end_date, aoi)
+    exporter.export_to_cloud_storage()
