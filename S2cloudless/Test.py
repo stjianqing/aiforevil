@@ -5,7 +5,7 @@ import time
 
 
 
-SERVICE_ACCOUNT_FILE = r'C:\Users\stjia\Desktop\Coding\Work\aiforevil\S2cloudless\service_account.json'
+SERVICE_ACCOUNT_FILE = r'./service_account.json'
 service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
 credentials = ee.ServiceAccountCredentials(service_account_email, SERVICE_ACCOUNT_FILE)
 ee.Initialize(credentials)
@@ -13,7 +13,8 @@ ee.Initialize(credentials)
 
 
 
-AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39)
+# AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39) # cuc phong
+AOI = ee.Geometry.BBox(106.94, 11.577, 107.38, 11.126) # cat tien
 START_DATE = '2020-06-01'
 END_DATE = '2020-09-01'
 CLOUD_FILTER = 60
@@ -93,32 +94,24 @@ def add_cld_shdw_mask(img):
 trueColorVis = {
 'bands': ['B4', 'B3', 'B2'],
 'min': "0.0",
-'max': "255.0"
-
+'max': "3000.0"
 }
 
 s2_sr_median = (s2_sr_cld_col.map(add_cld_shdw_mask)
                              .map(apply_cld_shdw_mask)
                              .median()
-                             .uint8()
-                             .select(['B4', 'B3', 'B2'])
-                             )
-
-                             
-
-
-
+                            #  .uint8()
+                             ._apply_visualization(trueColorVis)
+                             )[0]
 
 bucket_name = "aiforevil"
-
-
 
 export_params = {
     'image': s2_sr_median,
     'description': 's2_sr_median_export',  # Export name
     'bucket': bucket_name,  # Google Cloud Storage bucket name 
     'scale': 10,  # Resolution in meters per pixel
-    'region': ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39),  # Convert the region geometry to coordinates
+    'region': AOI,  # Convert the region geometry to coordinates
     'fileFormat': 'GeoTIFF',  # Export format
 }
 
