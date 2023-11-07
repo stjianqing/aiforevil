@@ -15,10 +15,13 @@ Input:
 Output:
     edge.png: the edge of the image
     segmentation.png: the segmentated image
+    overlay_edge.png: the overlay of the edge on the original image
+    overlay_segment.png: the overlay of the segmentated image on the original image
 '''
 import numpy as np
 import torch
 import cv2
+import os
 
 import sys
 sys.path.append("..")
@@ -43,9 +46,11 @@ class EdgeDetector():
         sam = sam_model_registry[self.model_type](checkpoint=self.checkpoint)
         sam.to(device=self.device)
 
-        self.mask_generator = SamAutomaticMaskGenerator(sam)
+        self.mask_generator = SamAutomaticMaskGenerator(sam, stability_score_thresh=0.9)
 
     def _preprocess(self):
+        # enable opencv to read jp2 files
+        os.environ["OPENCV_IO_ENABLE_JASPER"] = "true"
         self.img = cv2.imread(self.img_path)
         if self.img is None:
             raise ValueError("Image not found.")
@@ -69,7 +74,7 @@ class EdgeDetector():
         # get segmentated image
         if self.segment:
             tmp = cv2.cvtColor(segmentation, cv2.COLOR_RGB2GRAY)
-            _,alpha = cv2.threshold(tmp, 0, 128, cv2.THRESH_BINARY)
+            _, alpha = cv2.threshold(tmp, 0, 128, cv2.THRESH_BINARY)
             b, g, r = cv2.split(segmentation)
             rgba = [r, g, b, alpha]
             segment = cv2.merge(rgba, 4)
@@ -79,7 +84,7 @@ class EdgeDetector():
         # from the mask, get the edge
         if self.edge:
             edge = cv2.Canny(segmentation, 0, 1)
-            _,alpha = cv2.threshold(edge,0,255,cv2.THRESH_BINARY)
+            _, alpha = cv2.threshold(edge, 0, 255, cv2.THRESH_BINARY)
             rgba = [edge, edge, edge, alpha]
             edge = cv2.merge(rgba,4)
             edge = cv2.resize(edge, self.img_size)
@@ -94,7 +99,7 @@ class EdgeDetector():
 
     def overlay(self, overlay, type):
         image = self.img.copy()
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2BGRA)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
         image = cv2.resize(image, self.img_size)
         cv2.addWeighted(overlay, 1, image, 1, 0, image)
         image = cv2.resize(image, self.img_size)
@@ -110,7 +115,7 @@ class EdgeDetector():
 if __name__ == "__main__":
     sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
     model_type = "vit_l"
-    img_path = "./test_imgs/example.png"
+    img_path = "./test_imgs/cat_tien_cropped.jpg"
     edge_detector = EdgeDetector(sam_checkpoint, model_type, img_path)
     edge_detector.run()
 
