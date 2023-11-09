@@ -23,7 +23,7 @@ class AntiCloudProgram:
 
         self.START_DATE = START_DATE
         self.END_DATE = END_DATE
-        self.AOI = AOI if AOI is not None else ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39)  #cuc phuong forest bounding box
+        self.AOI = AOI if AOI is not None else ee.Geometry.BBox(105.508134, 20.235990, 105.738847, 20.398259)  #cuc phuong forest bounding box
         self.CLOUD_FILTER = 50
         self.CLD_PRB_THRESH = 40
         self.NIR_DRK_THRESH = 0.15
@@ -109,6 +109,7 @@ class AntiCloudProgram:
                                      .map(self.apply_cld_shdw_mask)
                                      .median())
         
+        print(s2_sr_median.getInfo())
 
         export_params = {
             'image': s2_sr_median,
@@ -121,6 +122,7 @@ class AntiCloudProgram:
 
         task = ee.batch.Export.image.toCloudStorage(**export_params)
         task.start()
+        
 
         while task.active():
             print("Exporting... (task ID: {})".format(task.id))
@@ -134,9 +136,9 @@ class AntiCloudProgram:
 if __name__ == '__main__':
     service_account_file = r'C:\Users\stjia\Desktop\Coding\Work\aiforevil\S2cloudless\service_account.json'
     bucket_name = "aiforevil"
-    aoi = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39)
-    start_date = '2020-06-01'
-    end_date = '2020-09-01'
+    aoi = ee.Geometry.BBox(105.508134, 20.235990, 105.738847, 20.398259)
+    start_date = '2023-07-01'
+    end_date = '2020-10-01'
 
     
     exporter = AntiCloudProgram(start_date, end_date, aoi)
