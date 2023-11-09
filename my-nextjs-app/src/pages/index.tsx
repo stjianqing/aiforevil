@@ -21,8 +21,23 @@ export default function Home() {
     setDate(e.target.value);
   }
 
-  function handleImage() {
-    //call api here to get the satellite image
+  async function handleImage() {
+    
+    // sends long and lat values to backend
+    const res = await fetch('http://127.0.0.1:5000/api/send',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({latitude, longitude})
+    })
+
+    //takes long and lat values and add it to http
+    const req = await fetch(`http://127.0.0.1:5000/api/send?lat=${latitude}&long=${longitude}`,{
+      method: 'GET',
+    })
+    .then(res => res.json())
+    .then(data => {console.log(data.url)})
   }
 
   return (
@@ -31,7 +46,7 @@ export default function Home() {
         <div className="flex flex-col m-5">
           <p>Latitude</p>
           <input
-            type="text"
+            type="number"
             className="border-black border"
             onChange={handleLatitudeChange}
           ></input>
@@ -39,7 +54,7 @@ export default function Home() {
         <div className="flex flex-col m-5">
           <p>Longitude</p>
           <input
-            type="text"
+            type="number"
             className="border-black border"
             onChange={handleLongitudeChange}
           ></input>
