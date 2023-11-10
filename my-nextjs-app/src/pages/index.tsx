@@ -9,6 +9,7 @@ export default function Home() {
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [date, setDate] = useState(0);
+  const [imgUrl, setImgUrl] = useState(0);
 
   function handleLatitudeChange(e) {
     setLatitude(e.target.value);
@@ -22,22 +23,21 @@ export default function Home() {
   }
 
   async function handleImage() {
-    
     // sends long and lat values to backend
-    const res = await fetch('http://127.0.0.1:5000/api/send',{
+    const req = await fetch('http://127.0.0.1:5000/api/location-coord',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({latitude, longitude})
+      body: JSON.stringify({latitude, longitude, date})
     })
 
     //takes long and lat values and add it to http
-    const req = await fetch(`http://127.0.0.1:5000/api/send?lat=${latitude}&long=${longitude}`,{
+    const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
       method: 'GET',
     })
     .then(res => res.json())
-    .then(data => {console.log(data.url)})
+    .then(data => {setImgUrl(data.url)})
   }
 
   return (
@@ -71,7 +71,17 @@ export default function Home() {
       >
         Get Image
       </button>
-      <Image src={small} className="w-[25rem] h-[25rem] m-5"></Image>
+      {/* <Image src={small} className="w-[25rem] h-[25rem] m-5"></Image> */}
+      {/* DEBUG: is showing 0 if not passed in */}
+      {imgUrl && 
+        <Image
+          alt="Satellite Image by given coordinates"
+          src={imgUrl}
+          width={100} // adjust the size
+          height={100} // adjust the size
+          className="w-[25rem] h-[25rem] m-5"
+        />
+      }
     </div>
   );
 }
