@@ -1,14 +1,21 @@
+import React, { useState, createRef } from "react";
+import Cropper, { ReactCropperElement } from "react-cropper";
+import "cropperjs/dist/cropper.css";
 import Image from "next/image";
-import { Inter } from "next/font/google";
-import { useEffect, useState, useMemo } from "react";
 import small from "public/small.jpg";
 
-const inter = Inter({ subsets: ["latin"] });
+const defaultSrc = "/small.jpg";
 
-export default function Home() {
+export const Home: React.FC = () => {
+  const [image, setImage] = useState(defaultSrc);
+  const [cropData, setCropData] = useState("#");
+  const cropperRef = createRef<ReactCropperElement>();
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [date, setDate] = useState(0);
+  const [cropped, setCropped] = useState(false);
+  const [croppedCoords, setCroppedCoords] = useState({"x1":0, "y1": 0, "x2": 0, "y2":0});
+ 
 
   function handleLatitudeChange(e) {
     setLatitude(e.target.value);
@@ -21,9 +28,23 @@ export default function Home() {
     setDate(e.target.value);
   }
 
-  function handleImage() {
-    //call api here to get the satellite image
-  }
+  const getCropData = () => {
+    if (typeof cropperRef.current?.cropper !== "undefined") {
+      console.log(typeof(cropperRef.current?.cropper.getCanvasData()));
+      const coords =({
+        "x1": cropperRef.current?.cropper.getCropBoxData().left/cropperRef.current?.cropper.getContainerData().width,
+        "y1": cropperRef.current?.cropper.getCropBoxData().top/cropperRef.current?.cropper.getContainerData().height,
+        "x2": (cropperRef.current?.cropper.getCropBoxData().left+cropperRef.current?.cropper.getCropBoxData().width)/cropperRef.current?.cropper.getContainerData().width,
+        "y2": (cropperRef.current?.cropper.getCropBoxData().top-cropperRef.current?.cropper.getCropBoxData().height)/cropperRef.current?.cropper.getContainerData().height});
+      setCroppedCoords(coords);
+      console.log(croppedCoords);
+      
+      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());      
+    }
+    setCropped(true);
+
+    
+  };
 
   return (
     <div className="flex w-screen h-screen flex-col ">
@@ -51,12 +72,54 @@ export default function Home() {
         ></input>
       </div>
       <button
-        onClick={handleImage}
+        // onClick={handleImage}
+        onClick={getCropData}
         className="w-fit border border-black p-2 m-5"
       >
-        Get Image
+        Crop
       </button>
-      <Image src={small} className="w-[25rem] h-[25rem] m-5"></Image>
+
+      <div className="flex flex-row w-screen">
+        <Cropper
+          ref={cropperRef}
+          // style={{ height: "10rem", width: "10rem" }}
+          className="w-[25rem] h-[25rem] m-5"
+          zoomTo={0.05}
+          initialAspectRatio={1}
+          preview=".img-preview"
+          src={image}
+          viewMode={1}
+          minCropBoxHeight={2}
+          minCropBoxWidth={2}
+          background={false}
+          responsive={true}
+          autoCropArea={0.5}
+          checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+          guides={true}
+        />
+        {cropped ? (
+          <img
+            className="w-[25rem] h-[25rem] object-contain m-5"
+            src={cropData}
+            alt="cropped"
+          />
+        ) : null}
+      </div>
     </div>
   );
-}
+};
+
+export default Home;
+
+// async function handleImage() {
+//   // Read the JP2 image from the file system.
+//   const jp2ImageBuffer = await fs.readFile("images/test.jp2");
+
+//   // Convert the JP2 image to a JPEG image.
+//   const jpgImageBuffer = await sharp(jp2ImageBuffer)
+//     .toFormat("jpeg")
+//     .toBuffer();
+
+//   // Write the JPEG image to the file system.
+//   await fs.writeFile("images/test.jpg", jpgImageBuffer);
+// }
