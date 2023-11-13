@@ -1,4 +1,4 @@
-import React, { useState, createRef } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import Image from "next/image";
@@ -14,8 +14,12 @@ export const Home: React.FC = () => {
   const [longitude, setLongitude] = useState(0);
   const [date, setDate] = useState(0);
   const [cropped, setCropped] = useState(false);
-  const [croppedCoords, setCroppedCoords] = useState({"x1":0, "y1": 0, "x2": 0, "y2":0});
- 
+  const [croppedCoords, setCroppedCoords] = useState({
+    x1: 0,
+    y1: 0,
+    x2: 0,
+    y2: 0,
+  });
 
   function handleLatitudeChange(e) {
     setLatitude(e.target.value);
@@ -28,22 +32,62 @@ export const Home: React.FC = () => {
     setDate(e.target.value);
   }
 
+  //x1,y1 is top right, x2,y2 is bottom left
+  function getDistance() {
+    const x1 = croppedCoords.x1;
+    const x2 = croppedCoords.x2;
+    const y1 = croppedCoords.y1;
+    const y2 = croppedCoords.y2;
+
+    const x_dist_real = (x1 - x2) * 10000;
+    const y_dist_real = (y2 - y1) * 10000;
+  }
+
+  useEffect(() => {
+    console.log(croppedCoords);
+    getDistance();
+  }, [croppedCoords]);
+
   const getCropData = () => {
     if (typeof cropperRef.current?.cropper !== "undefined") {
-      console.log(typeof(cropperRef.current?.cropper.getCanvasData()));
-      const coords =({
-        "x1": cropperRef.current?.cropper.getCropBoxData().left/cropperRef.current?.cropper.getContainerData().width,
-        "y1": cropperRef.current?.cropper.getCropBoxData().top/cropperRef.current?.cropper.getContainerData().height,
-        "x2": (cropperRef.current?.cropper.getCropBoxData().left+cropperRef.current?.cropper.getCropBoxData().width)/cropperRef.current?.cropper.getContainerData().width,
-        "y2": (cropperRef.current?.cropper.getCropBoxData().top-cropperRef.current?.cropper.getCropBoxData().height)/cropperRef.current?.cropper.getContainerData().height});
+      console.log(typeof cropperRef.current?.cropper.getCanvasData());
+      const coords = {
+        x1:
+          (cropperRef.current?.cropper.getCropBoxData().left +
+            cropperRef.current?.cropper.getCropBoxData().width) /
+          cropperRef.current?.cropper.getContainerData().width,
+        y1:
+          cropperRef.current?.cropper.getCropBoxData().top /
+          cropperRef.current?.cropper.getContainerData().height,
+        x2:
+          cropperRef.current?.cropper.getCropBoxData().left /
+          cropperRef.current?.cropper.getContainerData().width,
+        y2:
+          (cropperRef.current?.cropper.getCropBoxData().top +
+            cropperRef.current?.cropper.getCropBoxData().height) /
+          cropperRef.current?.cropper.getContainerData().height,
+      };
       setCroppedCoords(coords);
-      console.log(croppedCoords);
-      
-      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());      
+      console.log(
+        cropperRef.current?.cropper.getContainerData().height,
+        "container height"
+      );
+      console.log(
+        cropperRef.current?.cropper.getContainerData().width,
+        "container width"
+      );
+      console.log(
+        cropperRef.current?.cropper.getCropBoxData().height,
+        "cropbox height"
+      );
+      console.log(
+        cropperRef.current?.cropper.getCropBoxData().width,
+        "cropbox width"
+      );
+      console.log(cropperRef.current?.cropper.getCropBoxData(), "cropbox data");
+      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
     }
     setCropped(true);
-
-    
   };
 
   return (
@@ -83,8 +127,9 @@ export const Home: React.FC = () => {
         <Cropper
           ref={cropperRef}
           // style={{ height: "10rem", width: "10rem" }}
-          className="w-[25rem] h-[25rem] m-5"
-          zoomTo={0.05}
+          className="w-[400px] h-[400px] m-5"
+          // zoomTo={0.05}
+          zoomable={false}
           initialAspectRatio={1}
           preview=".img-preview"
           src={image}
