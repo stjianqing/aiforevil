@@ -1,33 +1,56 @@
 import React, { useState, createRef, useEffect } from "react";
-// import Cropper, { ReactCropperElement } from "react-cropper";
-// import "cropperjs/dist/cropper.css";
-import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
-// const defaultSrc = "/small.jpg";
+export const CFCoordinate: React.FC = () => {
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const router = useRouter();
+  function handleLatitudeChange(e) {
+    setLatitude(e.target.value);
+  }
+  function handleLongitudeChange(e) {
+    setLongitude(e.target.value);
+  }
 
-export const Home: React.FC = () => {
-  function handleFindForest() {}
-
-  function handleForestChange() {}
+  function handleConfirm() {
+    router.push({
+      pathname: "/compareforestchange/date",
+      query: { latitude: latitude, longitude: longitude },
+    });
+  }
   return (
-    <div className="flex w-screen h-screen flex-col justify-center items-center  ">
-      <h1 className="text-[3rem]">ForestFind</h1>
-      <p className="w-1/2">
-        Whether you're an environmental enthusiast, a conservationist, a
-        forestry professional, or just a curious nature lover, ForestFind allows
-        you to track and compare forest boundaries over time.
-      </p>
+    <div className="flex w-screen h-screen flex-col pt-[5rem] items-center  ">
+      <h1 className="text-[1.5rem]">Compare Forest Change</h1>
 
-      <button className="border border-black w-1/2 text-[1.5rem] h-fit p-3 m-3 rounded-2xl focus:bg-slate-300 hover:bg-slate-300">
-        <Link href="/coordinates">Find Forest</Link>
-      </button>
-
-      <button className="border border-black w-1/2 text-[1.5rem] h-fit p-3 m-3 rounded-2xl focus:bg-slate-300 hover:bg-slate-300">
-        <Link href="/coordinates">Compare Forest Change</Link>
-      </button>
+      <div className="flex w-1/2 flex-col justify-center items-center mt-10">
+        <p>Enter your coordinates</p>
+        <div className="flex flex-row mt-[1rem]">
+          <div className="flex flex-col mr-[2rem]">
+            <label className="mt-1 mb-6">Latitude:</label>
+            <label className="">Longitude:</label>
+          </div>
+          <div className="flex flex-col">
+            <input
+              onChange={handleLatitudeChange}
+              type="text"
+              className="w-[8rem] mb-4 border border-black p-1 rounded "
+            ></input>
+            <input
+              onChange={handleLongitudeChange}
+              type="text"
+              className="w-[8rem] border border-black p-1 rounded"
+            ></input>
+          </div>
+        </div>
+        <button
+          onClick={handleConfirm}
+          className="mt-[1rem] border border-black rounded-xl p-2"
+        >
+          Confirm
+        </button>
+      </div>
     </div>
   );
 };
 
-export default Home;
+export default CFCoordinate;
