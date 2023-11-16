@@ -8,7 +8,10 @@ export const FCDate: React.FC = () => {
   const [date1, setDate1] = useState("");
   const [date2, setDate2] = useState("");
   function handleConfirm() {
-    router.push("/compareforestchange/crop");
+    router.push({
+      pathname: "/compareforestchange/crop",
+      query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2},
+    });
   }
   function handleDate1Change(e) {
     setDate1(e.target.value);

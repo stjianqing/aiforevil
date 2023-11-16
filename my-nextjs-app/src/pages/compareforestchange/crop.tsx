@@ -23,7 +23,10 @@ export const InputCoordinates: React.FC = () => {
   });
 
   function handleConfirm() {
-    router.push("/compareforestchange/results");
+    router.push({
+      pathname: "/compareforestchange/results",
+      query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2},
+    });
   }
 
   function toggleModal() {
