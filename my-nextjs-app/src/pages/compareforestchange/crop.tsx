@@ -8,7 +8,7 @@ const defaultSrc = "/small.jpg";
 export const InputCoordinates: React.FC = () => {
   const router = useRouter();
   const [image, setImage] = useState(defaultSrc);
-  const [cropData, setCropData] = useState("#");
+  const [cropData, setCropData] = useState("");
   const cropperRef = createRef<ReactCropperElement>();
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
@@ -25,7 +25,7 @@ export const InputCoordinates: React.FC = () => {
   function handleConfirm() {
     router.push({
       pathname: "/compareforestchange/results",
-      query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2},
+      query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2, cropData: cropData},
     });
   }
 

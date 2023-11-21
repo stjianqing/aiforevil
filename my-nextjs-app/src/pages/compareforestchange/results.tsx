@@ -10,6 +10,7 @@ export const FCResults: React.FC = () => {
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date1, setDate1] = useState(router.query.date1);
   const [date2, setDate2] = useState(router.query.date2);
+  const [cropData, setCropData] = useState(router.query.cropData);
   const fileName: string = "report.pdf"
   const [isVisible, setIsVisible] = useState(false);
 
@@ -49,7 +50,7 @@ export const FCResults: React.FC = () => {
     <div className="flex w-screen h-screen flex-col pt-[5rem] items-center ">
       <h1 className="text-[1.5rem]">Compare Forest Change</h1>
       <div className = "flex flex-col justify-center">
-        <Image src = {defaultSrc} alt = "Cropped image" width={500} height={500}></Image>
+        <Image src = {cropData} alt = "Cropped image" width={500} height={500}></Image>
         <div className="flex flex-row gap-4 mt-5">
           <p>Latitude: {latitude}</p>
           <p>Longtitude: {longitude}</p>
