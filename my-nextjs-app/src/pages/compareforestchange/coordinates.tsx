@@ -1,5 +1,6 @@
 import React, { useState, createRef, useEffect } from "react";
 import { useRouter } from "next/router";
+import SearchBoc from "@/components/searchbox";
 
 export const CFCoordinate: React.FC = () => {
   const [latitude, setLatitude] = useState(0);
@@ -18,6 +19,25 @@ export const CFCoordinate: React.FC = () => {
       query: { latitude: latitude, longitude: longitude },
     });
   }
+
+  // function SearchComponent() {
+  //   const [value, setValue] = React.useState('');
+  //   const accessToken = "pk.eyJ1IjoidmFsdWRvbGxhciIsImEiOiJjbG95NTd1dmcwMTR0MmtuOW5mbGZjYXBlIn0.sKTGeqZyqi8BRP2O_0A8Xg"
+
+  //   const handleChange = (newValue) => {
+  //     setValue(newValue);
+  //     // You can perform additional logic with the new value if needed
+  //   };
+  //   return (
+  //     <form>
+  //       <SearchBox
+  //         accessToken={accessToken}
+  //         onChange={handleChange} // Handle changes to the search box value
+  //       />
+  //     </form>
+  //   );
+  // }
+  
   return (
     <div className="flex w-screen h-screen flex-col pt-[5rem] items-center  ">
       <h1 className="text-[1.5rem]">Compare Forest Change</h1>
@@ -48,6 +68,7 @@ export const CFCoordinate: React.FC = () => {
         >
           Confirm
         </button>
+
       </div>
     </div>
   );

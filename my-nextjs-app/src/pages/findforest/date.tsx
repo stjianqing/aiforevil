@@ -7,7 +7,16 @@ export const FFDate: React.FC = () => {
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date, setDate] = useState("");
   function handleConfirm() {
-    router.push("/findforest/crop");
+    router.push({
+      pathname: "/findforest/crop",
+      query: {
+        latitude: latitude,
+        longitude: longitude,
+        date: date,
+      },
+    });
+    console.log(latitude, longitude);
+    console.log(router.query);
   }
   function handleDateChange(e) {
     setDate(e.target.value);

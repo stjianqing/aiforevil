@@ -1,10 +1,29 @@
 import React, { useState, createRef, useEffect } from "react";
 import { useRouter } from "next/router";
+import {
+  AddressAutofill,
+  SearchBox,
+  AddressMinimap,
+} from "@mapbox/search-js-react";
+import SearchBoc from "@/components/searchbox";
+import dynamic from "next/dynamic";
 
 export const FFCoordinate: React.FC = () => {
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState();
+  const [longitude, setLongitude] = useState();
+  const [token, setToken] = useState("");
   const router = useRouter();
+  const [cropData, setCropData] = useState(router.query.cropData);
+
+  const Box = dynamic(() => import("@/components/searchbox"), {
+    ssr: false,
+  });
+  useEffect(() => {
+    const accessToken =
+      "pk.eyJ1IjoidmFsdWRvbGxhciIsImEiOiJjbG95NTd1dmcwMTR0MmtuOW5mbGZjYXBlIn0.sKTGeqZyqi8BRP2O_0A8Xg";
+    setToken(accessToken);
+    // config.accessToken = accessToken;
+  }, []);
   function handleLatitudeChange(e) {
     setLatitude(e.target.value);
   }
@@ -48,6 +67,11 @@ export const FFCoordinate: React.FC = () => {
         >
           Confirm
         </button>
+      </div>
+
+      <div>
+        {/* <SearchBox accessToken={token}></SearchBox> */}
+        <SearchBoc />
       </div>
     </div>
   );

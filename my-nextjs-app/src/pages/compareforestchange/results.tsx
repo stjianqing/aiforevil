@@ -49,7 +49,8 @@ export const FCResults: React.FC = () => {
   return (
     <div className="flex w-screen h-screen flex-col pt-[5rem] items-center ">
       <h1 className="text-[1.5rem]">Compare Forest Change</h1>
-      <div className = "flex flex-col justify-center">
+      <div className = "flex flex-col ">
+      
         <Image src = {cropData} alt = "Cropped image" width={500} height={500}></Image>
         <div className="flex flex-row gap-4 mt-5">
           <p>Latitude: {latitude}</p>

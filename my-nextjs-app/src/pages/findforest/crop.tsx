@@ -1,19 +1,19 @@
+// export default InputCoordinates;
 import React, { useState, createRef, useEffect } from "react";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import Image from "next/image";
-import small from "public/small.jpg";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 const defaultSrc = "/small.jpg";
 
 export const InputCoordinates: React.FC = () => {
+  const router = useRouter();
   const [image, setImage] = useState(defaultSrc);
-  const [cropData, setCropData] = useState("#");
+  const [cropData, setCropData] = useState("");
   const cropperRef = createRef<ReactCropperElement>();
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-  const [date, setDate] = useState(0);
+  const [latitude, setLatitude] = useState(router.query.latitude);
+  const [longitude, setLongitude] = useState(router.query.longitude);
+  const [date, setDate] = useState(router.query.date);
   const [cropped, setCropped] = useState(false);
   const [croppedCoords, setCroppedCoords] = useState({
     x1: 0,
@@ -21,20 +21,17 @@ export const InputCoordinates: React.FC = () => {
     x2: 0,
     y2: 0,
   });
-  const router = useRouter();
 
-  //   function handleLatitudeChange(e) {
-  //     setLatitude(e.target.value);
-  //   }
-  //   function handleLongitudeChange(e) {
-  //     setLongitude(e.target.value);
-  //   }
-
-  //   function handleDateChange(e) {
-  //     setDate(e.target.value);
-  //   }
   function handleConfirm() {
-    router.push("/findforest/results");
+    router.push({
+      pathname: "/findforest/results",
+      query: {
+        latitude: latitude,
+        longitude: longitude,
+        date: date,
+        cropData: cropData,
+      },
+    });
   }
 
   function toggleModal() {
@@ -101,10 +98,13 @@ export const InputCoordinates: React.FC = () => {
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[5rem] items-center  ">
-      <h1 className="text-[1.5rem]">Find Forest</h1>
+      <h1 className="text-[1.5rem]">Compare Forest Change</h1>
       <div className="flex flex-row gap-4">
         <p>Latitude: {latitude}</p>
         <p>Longtitude: {longitude}</p>
+      </div>
+      <div className="flex flex-row gap-4 mt-5">
+        <p>Date 1: {date}</p>
       </div>
 
       <div className="flex w-3/4 flex-col justify-center items-center">
@@ -170,16 +170,6 @@ export const InputCoordinates: React.FC = () => {
         </div>
       ) : null}
     </div>
-    // <div className="flex w-screen h-screen flex-col ">
-    //   <button
-    //     // onClick={handleImage}
-    //     onClick={getCropData}
-    //     className="w-fit border border-black p-2 m-5"
-    //   >
-    //     Crop
-    //   </button>
-
-    // </div>
   );
 };
 
