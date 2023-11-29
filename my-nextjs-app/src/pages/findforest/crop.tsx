@@ -1,5 +1,5 @@
 // export default InputCoordinates;
-import React, { useState, createRef, useEffect } from "react";
+import React, { useState, createRef, useEffect, Image } from "react";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useRouter } from "next/router";
@@ -8,7 +8,7 @@ const defaultSrc = "/small.jpg";
 
 export const InputCoordinates: React.FC = () => {
   const router = useRouter();
-  const [image, setImage] = useState(defaultSrc);
+  const [image, setImage] = useState(router.query.image);
   const [cropData, setCropData] = useState("");
   const cropperRef = createRef<ReactCropperElement>();
   const [latitude, setLatitude] = useState(router.query.latitude);
@@ -22,7 +22,15 @@ export const InputCoordinates: React.FC = () => {
     y2: 0,
   });
 
-  function handleConfirm() {
+  async function handleConfirm() {
+    const req = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(croppedCoords)
+    });
+
     router.push({
       pathname: "/findforest/results",
       query: { latitude: latitude, longitude: longitude, date: date, cropData: cropData},
@@ -51,11 +59,21 @@ export const InputCoordinates: React.FC = () => {
     const y_dist_real = (y2 - y1) * 10000;
   }
 
+  async function getImg(){
+    const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => {setImage(data.url)})
+  }
+
   useEffect(() => {
+    getImg();
     console.log(croppedCoords);
     getDistance();
   }, [croppedCoords]);
 
+  // DEBUG: data might not be correct
   const getCropData = () => {
     if (typeof cropperRef.current?.cropper !== "undefined") {
       console.log(typeof cropperRef.current?.cropper.getCanvasData());
@@ -154,7 +172,8 @@ export const InputCoordinates: React.FC = () => {
             />
           </div>
         </div>
-        <div className = "flex flex-col w-[8rem]"></div>
+        <div className = "flex flex-col w-[8rem]">
+        </div>
       </div>
     </div>
       

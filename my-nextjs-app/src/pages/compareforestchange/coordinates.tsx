@@ -87,6 +87,7 @@ export const CFCoordinate: React.FC = () => {
         </div>
       </div>
     </div>
+
     <div className = "flex flex-row w-full justify-between mb-[3rem]">
           <button
             onClick={handleBack}

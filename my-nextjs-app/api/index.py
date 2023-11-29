@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+# from earthengineapi import GoogleApi
 
 app = Flask(__name__)
 CORS(app)
@@ -10,30 +11,37 @@ def send_location_coordinates():
     lat = request.json.get('latitude')
     long = request.json.get('longitude')
     date = request.json.get('date')
+    # g = GoogleApi(lat, long, date)
+    # g.upload()
     res = {'latitude': lat, 'longitude': long, 'date': date}
-    # store image to gcp
     print(res)
     return jsonify(res)
 
 @app.route("/api/get-img", methods=['GET'])
 def get_image():
-    #TODO: update the url
-    msg = {'url': 'https://storage.googleapis.com/aiforevil/test.jpg'}
-    return jsonify(msg)
+    # res= send_location_coordinates() #takes in the lat/long values
+    # g = GoogleApi(Lat, Long, Date)
+    # g.upload()
+    # DEBUG: there are some issues with the Google Storage
+    # responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
+    responses = jsonify({'url': 'https://images.unsplash.com/photo-1695653422715-991ec3a0db7a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'})
+    return responses
 
 @app.route("/api/cropped-coord", methods=['POST'])
 def send_cropped_coordinates():
-    x1 = request.json.get('x1')
-    x2 = request.json.get('x2')
-    y1 = request.json.get('y1')
-    y2 = request.json.get('y2')
+    x1 = request.json.get('x1')*400
+    x2 = request.json.get('x2')*400
+    y1 = request.json.get('y1')*400
+    y2 = request.json.get('y2')*400
     res = {'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2}
+    print(res)
     return jsonify(res)
 
 @app.route('/api/get-segment', methods=['GET'])
 def get_segment():
     #TODO: update the url
     msg = {'url': 'https://storage.googleapis.com/aiforevil/test.jpg'}
+    print(msg)
     return jsonify(msg)
 
 if __name__ == '__main__':

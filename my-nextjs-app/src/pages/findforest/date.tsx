@@ -6,7 +6,16 @@ export const FFDate: React.FC = () => {
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date, setDate] = useState("");
-  function handleConfirm() {
+
+  async function handleConfirm() {
+    const req = await fetch('http://127.0.0.1:5000/api/location-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({latitude, longitude, date})
+    });
+
     router.push({
       pathname: "/findforest/crop",
       query: {
@@ -16,9 +25,11 @@ export const FFDate: React.FC = () => {
       },
     });
   }
+
   function handleDateChange(e) {
     setDate(e.target.value);
   }
+
   function handleBack() {
     router.push({
         pathname: "/findforest/coordinates",
