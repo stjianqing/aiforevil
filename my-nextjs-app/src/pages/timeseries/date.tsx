@@ -1,7 +1,9 @@
-'use client';
+
 import React, { useState, createRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Button, Dropdown } from "flowbite-react";
+import PeriodDropDown from "@/components/periodDropdown";
+
 
 export const FCDate: React.FC = () => {
   const router = useRouter();
@@ -9,16 +11,6 @@ export const FCDate: React.FC = () => {
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date, setDate] = useState("");
   const [period, setPeriod] = useState("Time Period");
-  function PeriodDropDown() {
-    return (
-      <Dropdown label={period} dismissOnClick={false}  defaultValue = "Period" className=" flex my-[1rem] text-xl rounded-lg p-[0.5rem] ">
-        <Dropdown.Item className = "px-[1rem]" onClick={() => handlePeriodChange("3 months") }>3 months</Dropdown.Item>
-        <Dropdown.Item className = "px-[1rem]" onClick={() => handlePeriodChange("6 months")}>6 months</Dropdown.Item>
-        <Dropdown.Item className = "px-[1rem]" onClick={() => handlePeriodChange("9 months")}>9 months</Dropdown.Item>
-        <Dropdown.Item className = "px-[1rem]" onClick={() => handlePeriodChange("1 year")}>1 year</Dropdown.Item>
-      </Dropdown>
-    );
-  }
 
   function handleBack() {
     router.push({
@@ -37,12 +29,13 @@ export const FCDate: React.FC = () => {
   }
 
   function handlePeriodChange(e) {
-    setPeriod(e.target.value);
+    setPeriod(e);
   }
+
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
       <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
-        Time Series
+        Forest Series
       </h1>
       <div className = "flex flex-row w-full px-3">
       <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-purple w-1/4 m-[1rem]">
@@ -80,12 +73,10 @@ export const FCDate: React.FC = () => {
         </div>
         <div className = "flex flex-col mt-[1rem] mx-[5rem]">
           <p className = "text-3xl font-medium">Period: </p>
-          
-          {/* <Button className = "flex my-[1rem] text-xl border-black border-2 rounded-lg p-[0.5rem] ">
-            <PeriodDropDown />
-          </Button> */}
+
           <div>
-          <PeriodDropDown />
+            {/* <PeriodDropDown /> */}
+            <PeriodDropDown handlePeriodChange={handlePeriodChange} />
           </div>
           
         </div>
