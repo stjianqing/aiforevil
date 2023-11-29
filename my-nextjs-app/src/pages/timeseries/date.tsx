@@ -1,41 +1,55 @@
+'use client';
 import React, { useState, createRef, useEffect } from "react";
 import { useRouter } from "next/router";
+import { Button, Dropdown } from "flowbite-react";
 
-export const FFDate: React.FC = () => {
+export const FCDate: React.FC = () => {
   const router = useRouter();
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date, setDate] = useState("");
+  const [period, setPeriod] = useState("Time Period");
+  function PeriodDropDown() {
+    return (
+      <Dropdown label={period} dismissOnClick={false}  defaultValue = "Period" className=" flex my-[1rem] text-xl rounded-lg p-[0.5rem] ">
+        <Dropdown.Item className = "px-[1rem]" onClick={() => handlePeriodChange("3 months") }>3 months</Dropdown.Item>
+        <Dropdown.Item className = "px-[1rem]" onClick={() => handlePeriodChange("6 months")}>6 months</Dropdown.Item>
+        <Dropdown.Item className = "px-[1rem]" onClick={() => handlePeriodChange("9 months")}>9 months</Dropdown.Item>
+        <Dropdown.Item className = "px-[1rem]" onClick={() => handlePeriodChange("1 year")}>1 year</Dropdown.Item>
+      </Dropdown>
+    );
+  }
+
+  function handleBack() {
+    router.push({
+        pathname: "/timeseries/coordinates",
+      })
+  };
+
   function handleConfirm() {
     router.push({
-      pathname: "/findforest/crop",
-      query: {
-        latitude: latitude,
-        longitude: longitude,
-        date: date,
-      },
+      pathname: "/timeseries/crop",
+      query: { latitude: latitude, longitude: longitude, date: date, period: period},
     });
   }
   function handleDateChange(e) {
     setDate(e.target.value);
   }
-  function handleBack() {
-    router.push({
-        pathname: "/findforest/coordinates",
-      })
-  };
 
+  function handlePeriodChange(e) {
+    setPeriod(e.target.value);
+  }
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
       <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
-        Find Forest
+        Time Series
       </h1>
       <div className = "flex flex-row w-full px-3">
-      <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem]">
+      <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-purple w-1/4 m-[1rem]">
             <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
           </svg>
 
-          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem] ">
+          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem] ">
           <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
         </svg>
         <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem] ">
@@ -56,35 +70,46 @@ export const FFDate: React.FC = () => {
           <p className = "flex flex-row w-fit text-lg"> {longitude}</p>
         </div>
       </div>
-
-      <p className="text-2xl text-black flex justify-center w-full mt-[4rem]">Select your dates of interest</p>
-
+      
+      <p className="text-2xl text-black flex justify-center w-full mt-[4rem]">Select your ending date of interest and time period</p>
+     
       <div className="flex flex-row flex-wrap justify-center mt-[2rem]">
         <div className="flex flex-col mt-[1rem] mx-[5rem] ">
           <label className = " text-3xl font-medium">Date: </label>
           <input className = "my-[1rem] text-xl border-black border rounded-lg p-[0.5rem]" type="date" onChange={handleDateChange}></input>
+        </div>
+        <div className = "flex flex-col mt-[1rem] mx-[5rem]">
+          <p className = "text-3xl font-medium">Period: </p>
+          
+          {/* <Button className = "flex my-[1rem] text-xl border-black border-2 rounded-lg p-[0.5rem] ">
+            <PeriodDropDown />
+          </Button> */}
+          <div>
+          <PeriodDropDown />
+          </div>
+          
         </div>
       </div> 
     
       <div className = "h-full">
       </div>
 
-      <div className = "flex flex-row w-full justify-between mt-[1rem] mb-[3rem]">
+      <div className = "flex flex-row w-full justify-between mb-[3rem]">
         <button
           onClick={handleBack}
-          className="mt-[5rem] font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 mx-[2rem]"
+          className="mt-[5rem] font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
         >
           Back
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[5rem] font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mx-[2rem]"
+          className="mt-[5rem] font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
         >
           Confirm
         </button>
       </div>
     </div>
-  )
+  );
 };
 
-export default FFDate;
+export default FCDate;

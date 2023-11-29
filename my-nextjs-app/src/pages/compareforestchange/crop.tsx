@@ -1,4 +1,3 @@
-// export default InputCoordinates;
 import React, { useState, createRef, useEffect } from "react";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
@@ -13,7 +12,8 @@ export const InputCoordinates: React.FC = () => {
   const cropperRef = createRef<ReactCropperElement>();
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
-  const [date, setDate] = useState(router.query.date);
+  const [date1, setDate1] = useState(router.query.date1);
+  const [date2, setDate2] = useState(router.query.date2);
   const [cropped, setCropped] = useState(false);
   const [croppedCoords, setCroppedCoords] = useState({
     x1: 0,
@@ -24,14 +24,14 @@ export const InputCoordinates: React.FC = () => {
 
   function handleConfirm() {
     router.push({
-      pathname: "/findforest/results",
-      query: { latitude: latitude, longitude: longitude, date: date, cropData: cropData},
+      pathname: "/compareforestchange/results",
+      query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2, cropData: cropData},
     });
   }
 
   function handleBack() {
     router.push({
-        pathname: "/findforest/date",
+        pathname: "/compareforestchange/date",
         query: { latitude: latitude, longitude: longitude},
       })
   };
@@ -101,17 +101,17 @@ export const InputCoordinates: React.FC = () => {
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
       <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
-        Find Forest
+        Forest Change
       </h1>
       <div className = "flex flex-row w-full px-3">
-        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem]">
+        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-pink w-1/4 m-[1rem]">
             <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
           </svg>
 
-          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem] ">
+          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-pink w-1/4 m-[1rem] ">
           <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
         </svg>
-        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem] ">
+        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-pink w-1/4 m-[1rem] ">
           <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
         </svg>
 
@@ -125,12 +125,14 @@ export const InputCoordinates: React.FC = () => {
           <div className="flex flex-col">
             <p className= "flex flex-row font-semibold text-lg">Latitude: </p>
             <p className = "flex flex-row w-fit font-semibold text-lg">Longtitude:</p>
-            <p className = "flex flex-row w-fit font-semibold text-lg">Date:</p>
+            <p className = "flex flex-row w-fit font-semibold text-lg">Date 1:</p>
+            <p className = "flex flex-row w-fit font-semibold text-lg">Date 2:</p>
           </div>
           <div className="flex flex-col w-fit ml-[1rem]">
             <p className= "flex flex-row w-fit text-lg"> {latitude}</p>
             <p className = "flex flex-row w-fit text-lg"> {longitude}</p>
-            <p className = "flex flex-row w-fit text-lg"> {date}</p>
+            <p className = "flex flex-row w-fit text-lg"> {date1}</p>
+            <p className = "flex flex-row w-fit text-lg"> {date2}</p>
           </div>
         </div>
         <div className = "flex flex-col mx-[1rem] items-center">
@@ -154,7 +156,7 @@ export const InputCoordinates: React.FC = () => {
             />
           </div>
         </div>
-        <div className = "flex flex-col w-[8rem]"></div>
+        <div className = "flex flex-col w-[6rem] "></div>
       </div>
     </div>
       
@@ -165,7 +167,6 @@ export const InputCoordinates: React.FC = () => {
       >
         Back
       </button>
-      
       <button
         onClick={getCropData}
         className=" font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mx-[2rem]"
@@ -174,8 +175,9 @@ export const InputCoordinates: React.FC = () => {
       </button>
     </div>
 
+
       {cropped ? (
-        <div className="h-full w-screen fixed flex justify-center items-center">
+        <div className="h-full w-full fixed flex justify-center items-center">
           <div className="w-full bg-black opacity-70 h-full fixed"></div>
           <div className=" fixed bg-white flex justify-center items-center flex-col px-[2rem] mb-[2rem] mx-[1rem]">
             <h3 className="text-xl pt-[2rem]"> Area of Interest</h3>
@@ -184,7 +186,7 @@ export const InputCoordinates: React.FC = () => {
               src={cropData}
               alt="cropped"
             />
-            <div className="flex flex-row justify-between mb-[2rem]">
+            <div className="flex flex-row justify-between mb-[1rem]">
               <button
                   onClick={toggleModal}
                   className="font-medium text-xl text-white bg-pink rounded-xl px-[3rem] p-2 mx-[2rem]"

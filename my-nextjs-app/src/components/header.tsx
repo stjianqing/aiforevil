@@ -1,19 +1,24 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, ReactNode } from "react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTree } from "@fortawesome/free-solid-svg-icons";
+
 
 export const Header: React.FC = () => {
   const router = useRouter();
   function handleHome() {
-    router.push("/");
+    router.push("/",);
   }
-
-  return (
-    <div className="w-screen h-[4rem] flex justify-center absolute bg-transparent">
-      <div className="w-[95%] h-[4rem] flex items-center text-[2rem] border-b-2 border-[#969696]">
-        <button onClick={handleHome}>ForestFind</button>
+    return (
+      <div className="w-screen h-[3rem] flex absolute bg-transparent">
+        <div className="w-fit h-[3rem] flex text-xl text-black mx-10 content-center">
+          <button onClick={handleHome}>ForestFind</button>
+          <FontAwesomeIcon className="h-[3rem] mt-3 mx-3" icon={faTree} />
+        </div>
       </div>
-    </div>
-  );
+    );
+
 };
 
 export default Header;
