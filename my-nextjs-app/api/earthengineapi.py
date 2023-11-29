@@ -3,6 +3,7 @@ import ee
 from google.cloud import storage
 import time
 
+print("hello world")
 # TODO: Have not fully finished
 class GoogleApi:
     def __init__(self, START_DATE='2020-06-01', END_DATE='2020-09-01', latlong=None):
