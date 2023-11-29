@@ -15,6 +15,7 @@ def send_location_coordinates():
     print(res)
     return jsonify(res)
 
+
 @app.route("/api/get-img", methods=['GET'])
 def get_image():
     #TODO: update the url
