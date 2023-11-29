@@ -10,10 +10,11 @@ def send_location_coordinates():
     #if request post, take lat/long values and jsonify dictionary
     lat = request.json.get('latitude')
     long = request.json.get('longitude')
-    date = request.json.get('date')
+    date1 = request.json.get('date1')
+    date2 = request.json.get('date2')
     # g = GoogleApi(lat, long, date)
     # g.upload()
-    res = {'latitude': lat, 'longitude': long, 'date': date}
+    res = {'latitude': lat, 'longitude': long, 'date1': date1, 'date2': date2}
     print(res)
     return jsonify(res)
 
@@ -22,9 +23,7 @@ def get_image():
     # res= send_location_coordinates() #takes in the lat/long values
     # g = GoogleApi(Lat, Long, Date)
     # g.upload()
-    # DEBUG: there are some issues with the Google Storage
-    # responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
-    responses = jsonify({'url': 'https://images.unsplash.com/photo-1695653422715-991ec3a0db7a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'})
+    responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
     return responses
 
 @app.route("/api/cropped-coord", methods=['POST'])
@@ -40,9 +39,8 @@ def send_cropped_coordinates():
 @app.route('/api/get-segment', methods=['GET'])
 def get_segment():
     #TODO: update the url
-    msg = {'url': 'https://storage.googleapis.com/aiforevil/test.jpg'}
-    print(msg)
-    return jsonify(msg)
+    responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
+    return responses
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

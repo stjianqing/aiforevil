@@ -1,5 +1,5 @@
 // export default InputCoordinates;
-import React, { useState, createRef, useEffect, Image } from "react";
+import React, { useState, createRef, useEffect } from "react";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useRouter } from "next/router";
@@ -31,9 +31,10 @@ export const InputCoordinates: React.FC = () => {
       body: JSON.stringify(croppedCoords)
     });
 
+    // TODO: instead of passing the cropData, pass the segemented image
     router.push({
       pathname: "/findforest/results",
-      query: { latitude: latitude, longitude: longitude, date: date, cropData: cropData},
+      query: { latitude: latitude, longitude: longitude, date: date},
     });
   }
 

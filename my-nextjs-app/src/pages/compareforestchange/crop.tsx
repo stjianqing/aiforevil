@@ -2,12 +2,13 @@ import React, { useState, createRef, useEffect } from "react";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useRouter } from "next/router";
+import { get } from "http";
 
 const defaultSrc = "/small.jpg";
 
 export const InputCoordinates: React.FC = () => {
   const router = useRouter();
-  const [image, setImage] = useState(defaultSrc);
+  const [image, setImage] = useState('');
   const [cropData, setCropData] = useState("");
   const cropperRef = createRef<ReactCropperElement>();
   const [latitude, setLatitude] = useState(router.query.latitude);
@@ -22,10 +23,18 @@ export const InputCoordinates: React.FC = () => {
     y2: 0,
   });
 
+  async function getImg(){
+    const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => {setImage(data.url)})
+  }
+
   function handleConfirm() {
     router.push({
       pathname: "/compareforestchange/results",
-      query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2, cropData: cropData},
+      query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2},
     });
   }
 
@@ -52,6 +61,7 @@ export const InputCoordinates: React.FC = () => {
   }
 
   useEffect(() => {
+    getImg();
     console.log(croppedCoords);
     getDistance();
   }, [croppedCoords]);

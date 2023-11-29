@@ -1,6 +1,5 @@
 import React, { useState, createRef, useEffect, useRef} from "react";
 import { useRouter } from "next/router";
-const defaultSrc = "/small.jpg";
 import Image from "next/image";
 import html2pdf from 'html2pdf.js';
 
@@ -10,10 +9,19 @@ export const FCResults: React.FC = () => {
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date1, setDate1] = useState(router.query.date1);
   const [date2, setDate2] = useState(router.query.date2);
-  const [cropData, setCropData] = useState(router.query.cropData);
+  const [image, setImage] = useState('');
+
   const fileName: string = "report.pdf"
   const [isVisible, setIsVisible] = useState(false);
 
+
+  async function getImg(){
+    const res = await fetch(`http://127.0.0.1:5000/api/get-segment`,{
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => {setImage(data.url)})
+  }
   function handleBack() {
     router.push({
         pathname: "/compareforestchange/crop",
@@ -31,7 +39,7 @@ export const FCResults: React.FC = () => {
     <div>
       <h2 style="font-size: 2rem; text-align:center; font-family:system-ui; ">Satellite Image in ${date1} and ${date2}</h2>
       <p style="font-size: 1.5rem; text-align:center; font-familt: system-ui;">Location: ${latitude}, ${longitude}</p>
-      <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${defaultSrc}" alt="Cropped image" width={500} height={500} justify: center></Image>
+      <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${image}" alt="Cropped image" width={500} height={500} justify: center></Image>
     </div>`;
 
   const DownloadPDFButton = ({}) => {
@@ -60,7 +68,9 @@ export const FCResults: React.FC = () => {
     )
   };
 
-
+  useEffect(() => {
+    getImg();
+  }, []);
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] items-center  ">
@@ -102,7 +112,9 @@ export const FCResults: React.FC = () => {
             <p className="text-xl text-black p-[1rem]">
             Your Forest
             </p>
-            <Image src = {cropData} alt = "Cropped image" width={350} height={350}></Image>
+            {image && 
+              <Image src={image} alt="Cropped image" width={350} height={350}></Image>
+            }
           </div>
 
           <div>
