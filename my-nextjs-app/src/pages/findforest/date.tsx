@@ -5,7 +5,7 @@ export const FFDate: React.FC = () => {
   const router = useRouter();
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
-  const [date, setDate] = useState("");
+  const [date1, setDate] = useState("");
 
   async function handleConfirm() {
     const req = await fetch('http://127.0.0.1:5000/api/location-coord',{
@@ -13,7 +13,7 @@ export const FFDate: React.FC = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({latitude, longitude, date})
+      body: JSON.stringify({latitude, longitude, date1})
     });
 
     router.push({
@@ -21,12 +21,12 @@ export const FFDate: React.FC = () => {
       query: {
         latitude: latitude,
         longitude: longitude,
-        date: date,
+        date: date1,
       },
     });
   }
 
-  function handleDateChange(e) {
+  function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
     setDate(e.target.value);
   }
 

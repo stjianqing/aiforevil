@@ -7,23 +7,33 @@ export const FCDate: React.FC = () => {
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date1, setDate1] = useState("");
   const [date2, setDate2] = useState("");
-  function handleConfirm() {
+
+  async function handleConfirm() {
+    const req = await fetch('http://127.0.0.1:5000/api/location-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({latitude, longitude, date1, date2})
+    });
+
     router.push({
       pathname: "/compareforestchange/crop",
       query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2},
     });
   }
+
   function handleBack() {
     router.push({
         pathname: "/compareforestchange/coordinates",
       })
   };
 
-  function handleDate1Change(e) {
+  function handleDate1Change(e: React.ChangeEvent<HTMLInputElement>) {
     setDate1(e.target.value);
   }
 
-  function handleDate2Change(e) {
+  function handleDate2Change(e: React.ChangeEvent<HTMLInputElement>) {
     setDate2(e.target.value);
   }
   return (

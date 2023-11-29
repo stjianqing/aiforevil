@@ -25,7 +25,7 @@ export const CFCoordinate: React.FC = () => {
 
   function handleConfirm() {
     router.push({
-      pathname: "/findforest/date",
+      pathname: "/compareforestchange/date",
       query: { latitude: latitude, longitude: longitude },
     });
   }
