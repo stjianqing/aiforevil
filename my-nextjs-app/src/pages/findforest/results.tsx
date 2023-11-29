@@ -14,10 +14,6 @@ export const FFDate: React.FC = () => {
   const fileName: string = "report.pdf"
 
 
-  function handleConfirm() {
-    router.push("/findforest/crop");
-  }
-
   function handleBack() {
     router.push({
         pathname: "/findforest/crop",

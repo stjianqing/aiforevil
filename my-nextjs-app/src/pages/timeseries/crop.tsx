@@ -14,6 +14,7 @@ export const InputCoordinates: React.FC = () => {
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date, setDate] = useState(router.query.date);
+  const [period, setPeriod] = useState(router.query.period);
   const [cropped, setCropped] = useState(false);
   const [croppedCoords, setCroppedCoords] = useState({
     x1: 0,
@@ -25,7 +26,7 @@ export const InputCoordinates: React.FC = () => {
   function handleConfirm() {
     router.push({
       pathname: "/timeseries/results",
-      query: { latitude: latitude, longitude: longitude, date: date, cropData: cropData},
+      query: { latitude: latitude, longitude: longitude, date: date, cropData: cropData, period: period},
     });
   }
 
