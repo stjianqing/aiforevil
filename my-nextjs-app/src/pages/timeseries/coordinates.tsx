@@ -1,8 +1,9 @@
 import React, { useState, createRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import SearchBoc from "@/components/searchbox";
+import dynamic from "next/dynamic";
 
-export const FFCoordinate: React.FC = () => {
+export const TSCoordinate: React.FC = () => {
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
   const [token, setToken] = useState("");
@@ -25,7 +26,7 @@ export const FFCoordinate: React.FC = () => {
 
   function handleConfirm() {
     router.push({
-      pathname: "/findforest/date",
+      pathname: "/timeseries/date",
       query: { latitude: latitude, longitude: longitude },
     });
   }
@@ -39,7 +40,7 @@ export const FFCoordinate: React.FC = () => {
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
       <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
-        Find Forest
+        Time Series
       </h1>
       <div className = "flex flex-row w-full px-3">
       <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem]">
@@ -105,4 +106,4 @@ export const FFCoordinate: React.FC = () => {
   );
 };
 
-export default FFCoordinate;
+export default TSCoordinate;

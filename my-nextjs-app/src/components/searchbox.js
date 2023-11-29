@@ -6,7 +6,7 @@ import {
 import React, { useState, createRef, useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
-export default function SearchBoc() {
+export default function SearchBoc( {updateCoordinates }) {
   mapboxgl.accessToken =
     "pk.eyJ1IjoieWVva2V3ZWkiLCJhIjoiY2xlcG5wZ3ZmMGUweTNxdGt4ZG1ldGhsYyJ9.HHNGnKUPolWAo5_UYwzCZg";
   const mapContainer = useRef(null);
@@ -17,13 +17,11 @@ export default function SearchBoc() {
   const [value, setValue] = useState("");
 
   function handleSelectLocation(e) {
-    console.log(e);
     const selectLat = e.features[0].geometry.coordinates[1];
     const selectLon = e.features[0].geometry.coordinates[0];
     setLat(selectLat);
     setLng(selectLon);
-    console.log(lng.toFixed(2));
-    console.log(lat);
+    updateCoordinates(selectLat, selectLon);
     map.current.flyTo({
       center: [lng, lat],
       zoom: zoom,
