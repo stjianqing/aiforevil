@@ -7,7 +7,11 @@ import Image from "next/image";
 const findForestSvg = "/public/find_forest.svg"
 const findForestPng = "/public/find_forest.png"
 
-// const defaultSrc = "/small.jpg";
+export default function Home() {
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [date, setDate] = useState(0);
+  const [imgUrl, setImgUrl] = useState(0);
 
 export const Home: React.FC = () => {
   const router = useRouter();
@@ -16,6 +20,22 @@ export const Home: React.FC = () => {
     router.push("/findforest/coordinates");
   }
 
+  async function handleImage() {
+    // sends long and lat values to backend
+    const req = await fetch('http://127.0.0.1:5000/api/location-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({latitude, longitude, date})
+    })
+
+    //takes long and lat values and add it to http
+    const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
+      method: 'GET',
+    })
+    .then(res => res.json())
+    .then(data => {setImgUrl(data.url)})
   function handleForestChange() {
     router.push("/compareforestchange/coordinates");
   }
@@ -23,7 +43,6 @@ export const Home: React.FC = () => {
   function handleTimeSeries() {
     router.push("/timeseries/coordinates");
   }
-  return (
     <div className="flex w-screen h-screen flex-col justify-center items-center pt-[1rem] ">
       <h1 className="text-7xl p-3">ForestFind</h1>
       <p className="w-4/6 text-xl p-3">
@@ -58,8 +77,24 @@ export const Home: React.FC = () => {
         </div>
           
       </div>
+      <button
+        onClick={handleImage}
+        className="w-fit border border-black p-2 m-5"
+      >
+        Get Image
+      </button>
+      {/* <Image src={small} className="w-[25rem] h-[25rem] m-5"></Image> */}
+      {/* DEBUG: is showing 0 if not passed in */}
+      {imgUrl && 
+        <Image
+          alt="Satellite Image by given coordinates"
+          src={imgUrl}
+          width={100} // adjust the size
+          height={100} // adjust the size
+          className="w-[25rem] h-[25rem] m-5"
+        />
+      }
 
-      
     </div>
   );
 };
