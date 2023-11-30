@@ -5,21 +5,16 @@ import time
 
 
 
-<<<<<<< HEAD
-SERVICE_ACCOUNT_FILE = r'C:/Users/stjia/Desktop/Coding/aiforevil/S2cloudless/service_account.json'
-=======
-SERVICE_ACCOUNT_FILE = r'C:/Users/stjia/Desktop/Term 7/aiforevil/S2cloudless/service_account.json'
->>>>>>> 9915cfb62e632e39ee7c1b7a0f9eb517ade4ed09
-service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
+SERVICE_ACCOUNT_FILE = r"C:/Users/stjia/Desktop/Coding/aiforevil/S2cloudless/spatial-design-studio-401610-968f22789eb6.json"
+service_account_email = "spatial-design-studio-401610@appspot.gserviceaccount.com"
 credentials = ee.ServiceAccountCredentials(service_account_email, SERVICE_ACCOUNT_FILE)
 ee.Initialize(credentials)
 
 
 
 
-# AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39) # cuc phong
+AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39) # cuc phong
 # AOI = ee.Geometry.BBox(106.94, 11.577, 107.38, 11.126) # cat tien
-AOI= ee.Geometry.Point(105.50, 20.23)     
 START_DATE = '2020-06-01'
 END_DATE = '2020-09-01'
 CLOUD_FILTER = 60
@@ -127,7 +122,7 @@ task.start()
 
 while task.active():
     print("Exporting... (task ID: {})".format(task.id))
-    time.sleep(30) 
+    time.sleep(60) 
 
 
 if task.status()['state'] == 'COMPLETED':
