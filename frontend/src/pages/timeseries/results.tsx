@@ -10,15 +10,23 @@ export const TSResults: React.FC = () => {
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date, setDate] = useState(router.query.date);
   const [period, setPeriod] = useState(router.query.period);
-  const [cropData, setCropData] = useState(router.query.cropData);
+  const [image, setImage] = useState('');
   const fileName: string = "report.pdf"
   const [isVisible, setIsVisible] = useState(false);
+
+  async function getImg(){
+    const res = await fetch(`http://127.0.0.1:5000/api/get-segment`,{
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => {setImage(data.url)})
+  }
 
   const htmlContent = `
     <div>
       <h2 style="font-size: 2rem; text-align:center; font-family:system-ui; ">Satellite Image in ${date} for ${period}</h2>
       <p style="font-size: 1.5rem; text-align:center; font-familt: system-ui;">Location: ${latitude}, ${longitude}</p>
-      <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${defaultSrc}" alt="Cropped image" width={500} height={500} justify: center></Image>
+      <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${image}" alt="Cropped image" width={500} height={500} justify: center></Image>
     </div>`;
 
   const DownloadPDFButton = ({}) => {
@@ -58,6 +66,9 @@ export const TSResults: React.FC = () => {
       })
   };
 
+  useEffect(() => {
+    getImg();
+  }, []);
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
@@ -98,14 +109,11 @@ export const TSResults: React.FC = () => {
           <div className = "flex flex-col ml-[1rem] items-center">
             <p className="text-xl text-black p-[1rem]">Your Forest</p>
             <div className="flex flex-row m-[4rem]">
-            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
-            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
-            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
-            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
-
+              <Image className = "p-[1rem]" src = {image} alt = "Cropped image" width={200} height={200}></Image>
+              <Image className = "p-[1rem]" src = {image} alt = "Cropped image" width={200} height={200}></Image>
+              <Image className = "p-[1rem]" src = {image} alt = "Cropped image" width={200} height={200}></Image>
+              <Image className = "p-[1rem]" src = {image} alt = "Cropped image" width={200} height={200}></Image>
             </div>
-
-            
           </div>
 
           <div>

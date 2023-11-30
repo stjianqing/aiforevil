@@ -1,7 +1,6 @@
 
 import React, { useState, createRef, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Button, Dropdown } from "flowbite-react";
 import PeriodDropDown from "@/components/periodDropdown";
 
 
@@ -9,7 +8,7 @@ export const FCDate: React.FC = () => {
   const router = useRouter();
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
-  const [date, setDate] = useState("");
+  const [date1, setDate] = useState("");
   const [period, setPeriod] = useState("Time Period");
 
   function handleBack() {
@@ -18,17 +17,25 @@ export const FCDate: React.FC = () => {
       })
   };
 
-  function handleConfirm() {
+  async function handleConfirm() {
+    const req = await fetch('http://127.0.0.1:5000/api/location-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({latitude, longitude, date1, period})
+    });
+
     router.push({
       pathname: "/timeseries/crop",
-      query: { latitude: latitude, longitude: longitude, date: date, period: period},
+      query: { latitude: latitude, longitude: longitude, date1: date1, period: period},
     });
   }
-  function handleDateChange(e) {
+  function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
     setDate(e.target.value);
   }
 
-  function handlePeriodChange(e) {
+  function handlePeriodChange(e: React.ChangeEvent<HTMLInputElement>) {
     setPeriod(e);
   }
 

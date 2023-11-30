@@ -12,9 +12,10 @@ def send_location_coordinates():
     long = request.json.get('longitude')
     date1 = request.json.get('date1')
     date2 = request.json.get('date2')
+    period = request.json.get('period')
     # g = GoogleApi(lat, long, date)
     # g.upload()
-    res = {'latitude': lat, 'longitude': long, 'date1': date1, 'date2': date2}
+    res = {'latitude': lat, 'longitude': long, 'date1': date1, 'date2': date2, 'preiod':period}
     print(res)
     return jsonify(res)
 

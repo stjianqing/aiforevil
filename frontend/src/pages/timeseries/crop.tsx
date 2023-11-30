@@ -23,6 +23,14 @@ export const InputCoordinates: React.FC = () => {
     y2: 0,
   });
 
+  async function getImg(){
+    const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => {setImage(data.url)})
+  }
+
   function handleConfirm() {
     router.push({
       pathname: "/timeseries/results",
@@ -53,6 +61,7 @@ export const InputCoordinates: React.FC = () => {
   }
 
   useEffect(() => {
+    getImg();
     console.log(croppedCoords);
     getDistance();
   }, [croppedCoords]);
