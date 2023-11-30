@@ -1,28 +1,33 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-# from earthengineapi import GoogleApi
+from earthengineapi import GoogleApi
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 CORS(app)
+
+'''Takes in front-end posted date and uploads image to Google Cloud Storage'''
+
+start_date=None
+end_date=None
 
 @app.route("/api/location-coord", methods=['POST'])
 def send_location_coordinates():
     #if request post, take lat/long values and jsonify dictionary
     lat = request.json.get('latitude')
     long = request.json.get('longitude')
-    date1 = request.json.get('date1')
-    date2 = request.json.get('date2')
-    # g = GoogleApi(lat, long, date)
-    # g.upload()
-    res = {'latitude': lat, 'longitude': long, 'date1': date1, 'date2': date2}
+    date = request.json.get('date')
+    end_date=datetime.strptime(request.json.get('date'), '%Y-%m-%d')
+    start_date = end_date - timedelta(days=3 * 30)
+    lat_long=lat,long
+    g = GoogleApi(start_date, end_date, lat_long)
+    g.upload()  #defaults to full image
+    res = {'latitude': lat, 'longitude': long, 'start_date': date, 'end_date': end_date}
     print(res)
     return jsonify(res)
 
 @app.route("/api/get-img", methods=['GET'])
 def get_image():
-    # res= send_location_coordinates() #takes in the lat/long values
-    # g = GoogleApi(Lat, Long, Date)
-    # g.upload()
     responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
     return responses
 
@@ -33,6 +38,8 @@ def send_cropped_coordinates():
     y1 = request.json.get('y1')*400
     y2 = request.json.get('y2')*400
     res = {'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2}
+    g = GoogleApi(start_date, end_date, latslongs= x1,y1,x2,y2)
+
     print(res)
     return jsonify(res)
 

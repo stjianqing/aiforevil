@@ -3,18 +3,18 @@ import ee
 from google.cloud import storage
 import time
 
-print("hello world")
 # TODO: Have not fully finished
 class GoogleApi:
-    def __init__(self, START_DATE='2020-06-01', END_DATE='2020-09-01', latlong=None):
+    def __init__(self, START_DATE='2020-06-01', END_DATE='2020-09-01', latlong=None, latslongs=None):
         self.SERVICE_ACCOUNT_FILE = r'C:/Users/stjia/Desktop/Term 7/aiforevil/S2cloudless/service_account.json'
         self.service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
         self.credentials = ee.ServiceAccountCredentials(self.service_account_email, self.SERVICE_ACCOUNT_FILE)
         ee.Initialize(self.credentials)
-        # AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39) # cuc phong
-        latlong=[11.577, 106.94]
-        point_coordinate=
-        self.AOI = ee.Geometry.BBox(106.94, 11.577, 107.38, 11.126) # cat tien
+        self.AOI = ee.Geometry.Point(105.50, 20.23) # cuc phong
+        # self.AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39) # cuc phong
+        self.latlong=latlong
+        self.latslongs=latslongs
+        # self.AOI = ee.Geometry.BBox(106.94, 11.577, 107.38, 11.126) # cat tien
         self.START_DATE=START_DATE
         self.END_DATE = END_DATE
         self.CLOUD_FILTER = 60
@@ -83,20 +83,19 @@ class GoogleApi:
             .rename('cloudmask'))
         return img_cloud_shadow.addBands(is_cld_shdw)
 
-    def
-
     def upload(self, crop=False):
         bucket_name = "aiforevil"
 
         if crop==True:
             export_params = {
                 'image': self.image,
-                'description': 'image_export',  # Export name
+                'description': 'cropped_image',  # Export name
                 'bucket': bucket_name,  # Google Cloud Storage bucket name 
                 'scale': 10,  # Resolution in meters per pixel
                 'region': self.AOI,  # Convert the region geometry to coordinates
                 'fileFormat': 'GeoTIFF',  # Export format
             }
+
             task = ee.batch.Export.image.toCloudStorage(**export_params)
             task.start()
             while task.active():
@@ -108,12 +107,13 @@ class GoogleApi:
                 print("Export failed. Check the task status for more details.")
 
         else:
+            print("Exporting full image")
             export_params = {
                 'image': self.image,
-                'description': 'image_export',  # Export name
+                'description': 'full_image',  # Export name
                 'bucket': bucket_name,  # Google Cloud Storage bucket name 
                 'scale': 10,  # Resolution in meters per pixel
-                'region': self.point_coordinates,  # Convert the region geometry to coordinates
+                'region':self.AOI, # Convert the region geometry to coordinates
                 'fileFormat': 'GeoTIFF',  # Export format
                 'maxPixels': 1e13
             }
