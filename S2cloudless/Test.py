@@ -5,7 +5,7 @@ import time
 
 
 
-SERVICE_ACCOUNT_FILE = r'./service_account.json'
+SERVICE_ACCOUNT_FILE = r'C:/Users/stjia/Desktop/Term 7/aiforevil/S2cloudless/service_account.json'
 service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
 credentials = ee.ServiceAccountCredentials(service_account_email, SERVICE_ACCOUNT_FILE)
 ee.Initialize(credentials)
@@ -14,7 +14,8 @@ ee.Initialize(credentials)
 
 
 # AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39) # cuc phong
-AOI = ee.Geometry.BBox(106.94, 11.577, 107.38, 11.126) # cat tien
+# AOI = ee.Geometry.BBox(106.94, 11.577, 107.38, 11.126) # cat tien
+AOI= ee.Geometry.Point(105.50, 20.23)     
 START_DATE = '2020-06-01'
 END_DATE = '2020-09-01'
 CLOUD_FILTER = 60
@@ -112,7 +113,7 @@ export_params = {
     'bucket': bucket_name,  # Google Cloud Storage bucket name 
     'scale': 10,  # Resolution in meters per pixel
     'region': AOI,  # Convert the region geometry to coordinates
-    'fileFormat': 'GeoTIFF',  # Export format
+    'fileFormat': 'GeoTIFF'  # Export format
 }
 
 

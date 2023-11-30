@@ -9,12 +9,20 @@ export const FCDate: React.FC = () => {
   const [date2, setDate2] = useState("");
 
   async function handleConfirm() {
-    const req = await fetch('http://127.0.0.1:5000/api/location-coord',{
+    const req1 = await fetch('http://127.0.0.1:5000/api/location-coord',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({latitude, longitude, date1, date2})
+      body: JSON.stringify({latitude, longitude, date: date1})
+    });
+
+    const req2 = await fetch('http://127.0.0.1:5000/api/location-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({latitude, longitude, date: date2})
     });
 
     router.push({
