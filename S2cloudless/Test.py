@@ -5,7 +5,7 @@ import time
 
 
 
-SERVICE_ACCOUNT_FILE = r'./service_account.json'
+SERVICE_ACCOUNT_FILE = r'C:/Users/stjia/Desktop/Coding/aiforevil/S2cloudless/service_account.json'
 service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
 credentials = ee.ServiceAccountCredentials(service_account_email, SERVICE_ACCOUNT_FILE)
 ee.Initialize(credentials)
