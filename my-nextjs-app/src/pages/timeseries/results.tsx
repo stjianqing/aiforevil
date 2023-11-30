@@ -1,8 +1,10 @@
-import React, { useState, createRef, useEffect, useRef} from "react";
+import React, { useState, createRef, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 const defaultSrc = "/small.jpg";
 import Image from "next/image";
-import html2pdf from 'html2pdf.js';
+import html2pdf from "html2pdf.js";
+import { FaHome } from "react-icons/fa";
+import { FaAngleLeft } from "react-icons/fa6";
 
 export const TSResults: React.FC = () => {
   const router = useRouter();
@@ -11,7 +13,7 @@ export const TSResults: React.FC = () => {
   const [date, setDate] = useState(router.query.date);
   const [period, setPeriod] = useState(router.query.period);
   const [cropData, setCropData] = useState(router.query.cropData);
-  const fileName: string = "report.pdf"
+  const fileName: string = "report.pdf";
   const [isVisible, setIsVisible] = useState(false);
 
   const htmlContent = `
@@ -25,112 +27,167 @@ export const TSResults: React.FC = () => {
     const containerRef = useRef(null);
     const handleDownload = () => {
       const element = containerRef.current;
-      const opt =  {
+      const opt = {
         margin: 10,
         filename: "Report.pdf",
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { type: "jpeg", quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      }
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      };
       html2pdf().set(opt).from(htmlContent).save();
     };
 
     return (
       <div>
-        <button 
+        <button
           onClick={handleDownload}
-          className="mt-[1rem] border border-black rounded-xl p-2">Download</button>
-
+          className="mt-[1rem] border border-black rounded-xl p-2"
+        >
+          Download
+        </button>
       </div>
-    )
+    );
   };
 
   function handleBack() {
     router.push({
-        pathname: "/timeseries/crop",
-        query: { latitude: latitude, longitude: longitude, date: date, period: period},
-      })
-  };
+      pathname: "/timeseries/crop",
+      query: {
+        latitude: latitude,
+        longitude: longitude,
+        date: date,
+        period: period,
+      },
+    });
+  }
 
   function handleHome() {
     router.push({
-        pathname: "/"
-      })
-  };
-
+      pathname: "/",
+    });
+  }
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
       <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
         Time Series
       </h1>
-      <div className = "flex flex-row w-full px-3">
-      <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem]">
-            <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
-          </svg>
-
-          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem] ">
-          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+      <div className="flex flex-row w-full px-3">
+        <svg
+          height="6"
+          viewBox="0 0 423 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-green w-1/4 m-[1rem]"
+        >
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
         </svg>
-        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem] ">
-          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+
+        <svg
+          height="6"
+          viewBox="0 0 423 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-green w-1/4 m-[1rem] "
+        >
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
+        </svg>
+        <svg
+          height="6"
+          viewBox="0 0 423 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-gray w-1/4 m-[1rem] "
+        >
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
         </svg>
 
-        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem]">
-          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+        <svg
+          height="6"
+          viewBox="0 0 423 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-gray w-1/4 m-[1rem]"
+        >
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
         </svg>
       </div>
       <div className="flex p-1 flex-wrap justify-around w-full">
-          <div className = "flex items-start">
-            <div className="flex flex-col">
-              <p className= "flex flex-row font-semibold text-lg">Latitude: </p>
-              <p className = "flex flex-row w-fit font-semibold text-lg">Longtitude:</p>
-              <p className = "flex flex-row w-fit font-semibold text-lg">Date:</p>
-              <p className = "flex flex-row w-fit font-semibold text-lg">Time Period:</p>
-            </div>
-            <div className="flex flex-col w-fit ml-[1rem]">
-              <p className= "flex flex-row w-fit text-lg"> {latitude}</p>
-              <p className = "flex flex-row w-fit text-lg"> {longitude}</p>
-              <p className = "flex flex-row w-fit text-lg"> {date}</p>
-              <p className = "flex flex-row w-fit text-lg"> {period}</p>
-            </div>
+        <div className="flex items-start">
+          <div className="flex flex-col">
+            <p className="flex flex-row font-semibold text-lg">Latitude: </p>
+            <p className="flex flex-row w-fit font-semibold text-lg">
+              Longtitude:
+            </p>
+            <p className="flex flex-row w-fit font-semibold text-lg">Date:</p>
+            <p className="flex flex-row w-fit font-semibold text-lg">
+              Time Period:
+            </p>
           </div>
-          <div className = "flex flex-col ml-[1rem] items-center">
-            <p className="text-xl text-black p-[1rem]">Your Forest</p>
-            <div className="flex flex-row m-[4rem]">
-            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
-            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
-            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
-            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
-
-            </div>
-
-            
+          <div className="flex flex-col w-fit ml-[1rem]">
+            <p className="flex flex-row w-fit text-lg"> {latitude}</p>
+            <p className="flex flex-row w-fit text-lg"> {longitude}</p>
+            <p className="flex flex-row w-fit text-lg"> {date}</p>
+            <p className="flex flex-row w-fit text-lg"> {period}</p>
           </div>
-
-          <div>
-            <DownloadPDFButton />
+        </div>
+        <div className="flex flex-col ml-[1rem] items-center">
+          <p className="text-xl text-black p-[1rem]">Your Forest</p>
+          <div className="flex flex-row m-[4rem]">
+            <Image
+              className="p-[1rem]"
+              src={cropData}
+              alt="Cropped image"
+              width={200}
+              height={200}
+            ></Image>
+            <Image
+              className="p-[1rem]"
+              src={cropData}
+              alt="Cropped image"
+              width={200}
+              height={200}
+            ></Image>
+            <Image
+              className="p-[1rem]"
+              src={cropData}
+              alt="Cropped image"
+              width={200}
+              height={200}
+            ></Image>
+            <Image
+              className="p-[1rem]"
+              src={cropData}
+              alt="Cropped image"
+              width={200}
+              height={200}
+            ></Image>
           </div>
+        </div>
+
+        <div>
+          <DownloadPDFButton />
+        </div>
       </div>
 
-      <div className = "flex flex-row w-full justify-between mb-[3rem]">
+      <div className="flex flex-row w-full justify-between mb-[3rem]">
         <button
           onClick={handleBack}
-          className="mt-[5rem] font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
+          className="mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
         >
-          Back
+          <FaAngleLeft></FaAngleLeft>
+          <p>Back</p>
         </button>
         <button
           onClick={handleHome}
-          className="mt-[5rem] font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
+          className="mt-[5rem] flex flex-row justify-center items-center gap-2  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
         >
-          Home
+          <p>Home</p>
+          <FaHome></FaHome>
         </button>
       </div>
     </div>
   );
 };
-
-
 
 export default TSResults;
