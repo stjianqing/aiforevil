@@ -4,19 +4,19 @@ const defaultSrc = "/small.jpg";
 import Image from "next/image";
 import html2pdf from 'html2pdf.js';
 
-export const FCResults: React.FC = () => {
+export const TSResults: React.FC = () => {
   const router = useRouter();
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
-  const [date1, setDate1] = useState(router.query.date1);
-  const [date2, setDate2] = useState(router.query.date2);
+  const [date, setDate] = useState(router.query.date);
+  const [period, setPeriod] = useState(router.query.period);
   const [cropData, setCropData] = useState(router.query.cropData);
   const fileName: string = "report.pdf"
   const [isVisible, setIsVisible] = useState(false);
 
   const htmlContent = `
     <div>
-      <h2 style="font-size: 2rem; text-align:center; font-family:system-ui; ">Satellite Image in ${date1} and ${date2}</h2>
+      <h2 style="font-size: 2rem; text-align:center; font-family:system-ui; ">Satellite Image in ${date} for ${period}</h2>
       <p style="font-size: 1.5rem; text-align:center; font-familt: system-ui;">Location: ${latitude}, ${longitude}</p>
       <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${defaultSrc}" alt="Cropped image" width={500} height={500} justify: center></Image>
     </div>`;
@@ -45,27 +45,92 @@ export const FCResults: React.FC = () => {
     )
   };
 
+  function handleBack() {
+    router.push({
+        pathname: "/timeseries/crop",
+        query: { latitude: latitude, longitude: longitude, date: date, period: period},
+      })
+  };
+
+  function handleHome() {
+    router.push({
+        pathname: "/"
+      })
+  };
+
 
   return (
-    <div className="flex w-screen h-screen flex-col pt-[5rem] items-center ">
-      <h1 className="text-[1.5rem]">Compare Forest Change</h1>
-      <div className = "flex flex-col ">
-      
-        <Image src = {cropData} alt = "Cropped image" width={500} height={500}></Image>
-        <div className="flex flex-row gap-4 mt-5">
-          <p>Latitude: {latitude}</p>
-          <p>Longtitude: {longitude}</p>
-        </div>
-        <div className="flex flex-row gap-4 mt-5">
-          <p>Date 1: {date1}</p>
-          <p>Date 2: {date2}</p>
-        </div>
-        <div>
-          <DownloadPDFButton />
-        </div> 
+    <div className="flex w-screen h-screen flex-col pt-[2rem] ">
+      <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
+        Time Series
+      </h1>
+      <div className = "flex flex-row w-full px-3">
+      <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem]">
+            <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+          </svg>
+
+          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem] ">
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+        </svg>
+        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem] ">
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+        </svg>
+
+        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem]">
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+        </svg>
+      </div>
+      <div className="flex p-1 flex-wrap justify-around w-full">
+          <div className = "flex items-start">
+            <div className="flex flex-col">
+              <p className= "flex flex-row font-semibold text-lg">Latitude: </p>
+              <p className = "flex flex-row w-fit font-semibold text-lg">Longtitude:</p>
+              <p className = "flex flex-row w-fit font-semibold text-lg">Date:</p>
+              <p className = "flex flex-row w-fit font-semibold text-lg">Time Period:</p>
+            </div>
+            <div className="flex flex-col w-fit ml-[1rem]">
+              <p className= "flex flex-row w-fit text-lg"> {latitude}</p>
+              <p className = "flex flex-row w-fit text-lg"> {longitude}</p>
+              <p className = "flex flex-row w-fit text-lg"> {date}</p>
+              <p className = "flex flex-row w-fit text-lg"> {period}</p>
+            </div>
+          </div>
+          <div className = "flex flex-col ml-[1rem] items-center">
+            <p className="text-xl text-black p-[1rem]">Your Forest</p>
+            <div className="flex flex-row m-[4rem]">
+            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
+            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
+            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
+            <Image className = "p-[1rem]" src = {cropData} alt = "Cropped image" width={200} height={200}></Image>
+
+            </div>
+
+            
+          </div>
+
+          <div>
+            <DownloadPDFButton />
+          </div>
+      </div>
+
+      <div className = "flex flex-row w-full justify-between mb-[3rem]">
+        <button
+          onClick={handleBack}
+          className="mt-[5rem] font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
+        >
+          Back
+        </button>
+        <button
+          onClick={handleHome}
+          className="mt-[5rem] font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
+        >
+          Home
+        </button>
       </div>
     </div>
   );
 };
 
-export default FCResults;
+
+
+export default TSResults;

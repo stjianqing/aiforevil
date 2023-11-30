@@ -40,7 +40,7 @@ export const TSCoordinate: React.FC = () => {
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
       <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
-        Time Series
+      Forest Series
       </h1>
       <div className = "flex flex-row w-full px-3">
       <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem]">
