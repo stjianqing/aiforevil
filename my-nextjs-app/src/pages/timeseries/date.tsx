@@ -1,9 +1,9 @@
-
 import React, { useState, createRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Button, Dropdown } from "flowbite-react";
 import PeriodDropDown from "@/components/periodDropdown";
-
+import { FaCheck } from "react-icons/fa6";
+import { FaAngleLeft } from "react-icons/fa6";
 
 export const FCDate: React.FC = () => {
   const router = useRouter();
@@ -14,14 +14,19 @@ export const FCDate: React.FC = () => {
 
   function handleBack() {
     router.push({
-        pathname: "/timeseries/coordinates",
-      })
-  };
+      pathname: "/timeseries/coordinates",
+    });
+  }
 
   function handleConfirm() {
     router.push({
       pathname: "/timeseries/crop",
-      query: { latitude: latitude, longitude: longitude, date: date, period: period},
+      query: {
+        latitude: latitude,
+        longitude: longitude,
+        date: date,
+        period: period,
+      },
     });
   }
   function handleDateChange(e) {
@@ -37,66 +42,98 @@ export const FCDate: React.FC = () => {
       <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
         Forest Series
       </h1>
-      <div className = "flex flex-row w-full px-3">
-      <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-purple w-1/4 m-[1rem]">
-            <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
-          </svg>
-
-          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem] ">
-          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+      <div className="flex flex-row w-full px-3">
+        <svg
+          height="6"
+          viewBox="0 0 423 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-purple w-1/4 m-[1rem]"
+        >
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
         </svg>
-        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem] ">
-          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+
+        <svg
+          height="6"
+          viewBox="0 0 423 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-gray w-1/4 m-[1rem] "
+        >
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
+        </svg>
+        <svg
+          height="6"
+          viewBox="0 0 423 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-gray w-1/4 m-[1rem] "
+        >
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
         </svg>
 
-        <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem]">
-          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
+        <svg
+          height="6"
+          viewBox="0 0 423 6"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="fill-gray w-1/4 m-[1rem]"
+        >
+          <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
         </svg>
       </div>
       <div className="flex justify-left ml-[2.5rem] p-3">
         <div className="flex flex-col">
-          <p className= "flex flex-row font-semibold text-lg">Latitude: </p>
-          <p className = "flex flex-row w-fit font-semibold text-lg">Longtitude:</p>
+          <p className="flex flex-row font-semibold text-lg">Latitude: </p>
+          <p className="flex flex-row w-fit font-semibold text-lg">
+            Longtitude:
+          </p>
         </div>
         <div className="flex flex-col w-fit ml-[1rem]">
-          <p className= "flex flex-row w-fit text-lg"> {latitude}</p>
-          <p className = "flex flex-row w-fit text-lg"> {longitude}</p>
+          <p className="flex flex-row w-fit text-lg"> {latitude}</p>
+          <p className="flex flex-row w-fit text-lg"> {longitude}</p>
         </div>
       </div>
-      
-      <p className="text-2xl text-black flex justify-center w-full mt-[4rem]">Select your ending date of interest and time period</p>
-     
+
+      <p className="text-2xl text-black flex justify-center w-full mt-[4rem]">
+        Select your ending date of interest and time period
+      </p>
+
       <div className="flex flex-row flex-wrap justify-center mt-[2rem]">
         <div className="flex flex-col mt-[1rem] mx-[5rem] ">
-          <label className = " text-3xl font-medium">Date: </label>
-          <input className = "my-[1rem] text-xl border-black border rounded-lg p-[0.5rem]" type="date" onChange={handleDateChange}></input>
+          <label className=" text-3xl font-medium">Date: </label>
+          <input
+            className="my-[1rem] text-xl border-black border rounded-lg p-[0.5rem]"
+            type="date"
+            onChange={handleDateChange}
+          ></input>
         </div>
-        <div className = "flex flex-col mt-[1rem] mx-[5rem]">
-          <p className = "text-3xl font-medium">Period: </p>
+        <div className="flex flex-col mt-[1rem] mx-[5rem]">
+          <p className="text-3xl font-medium">Period: </p>
 
           <div>
             {/* <PeriodDropDown /> */}
             <PeriodDropDown handlePeriodChange={handlePeriodChange} />
           </div>
-          
         </div>
-      </div> 
-    
-      <div className = "h-full">
       </div>
 
-      <div className = "flex flex-row w-full justify-between mb-[3rem]">
+      <div className="h-full"></div>
+
+      <div className="flex flex-row w-full justify-between mb-[3rem]">
         <button
           onClick={handleBack}
-          className="mt-[5rem] font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
+          className="mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
         >
-          Back
+          <FaAngleLeft></FaAngleLeft>
+          <p>Back</p>
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[5rem] font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
+          className="mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
         >
-          Confirm
+          <p>Confirm</p>
+          <FaCheck></FaCheck>
         </button>
       </div>
     </div>
