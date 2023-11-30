@@ -133,7 +133,7 @@ export const TSResults: React.FC = () => {
         </div>
         <div className="flex flex-col ml-[1rem] items-center">
           <p className="text-xl text-black p-[1rem]">Your Forest</p>
-          <div className="flex flex-row m-[4rem]">
+          <div className="flex flex-row  m-[4rem]">
             <Image
               className="p-[1rem]"
               src={cropData}

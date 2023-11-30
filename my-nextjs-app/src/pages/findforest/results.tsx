@@ -61,7 +61,7 @@ export const FFDate: React.FC = () => {
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] items-center  ">
-      <h1 className="text-black text-6xl justify-center flex font-semibold p-3">
+      <h1 className="text-black sm:text-5xl text-2xl  justify-center flex font-semibold p-3">
         Find Forest
       </h1>
       <div className="flex flex-row w-full px-3">
@@ -107,16 +107,26 @@ export const FFDate: React.FC = () => {
       <div className="flex p-1 flex-wrap justify-around w-full">
         <div className="flex items-start">
           <div className="flex flex-col">
-            <p className="flex flex-row font-semibold text-lg">Latitude: </p>
-            <p className="flex flex-row w-fit font-semibold text-lg">
+            <p className="flex flex-row font-semibold  text-lg sm:text-3xl">
+              Latitude:{" "}
+            </p>
+            <p className="flex flex-row w-fit font-semibold  text-lg sm:text-3xl">
               Longtitude:
             </p>
-            <p className="flex flex-row w-fit font-semibold text-lg">Date:</p>
+            <p className="flex flex-row w-fit font-semibold  text-lg sm:text-3xl">
+              Date:
+            </p>
           </div>
           <div className="flex flex-col w-fit ml-[1rem]">
-            <p className="flex flex-row w-fit text-lg"> {latitude}</p>
-            <p className="flex flex-row w-fit text-lg"> {longitude}</p>
-            <p className="flex flex-row w-fit text-lg"> {date}</p>
+            <p className="flex flex-row w-fit  text-lg sm:text-3xl">
+              {" "}
+              {latitude}
+            </p>
+            <p className="flex flex-row w-fit  text-lg sm:text-3xl">
+              {" "}
+              {longitude}
+            </p>
+            <p className="flex flex-row w-fit text-lg sm:text-3xl"> {date}</p>
           </div>
         </div>
         <div className="flex flex-col ml-[1rem] items-center">
@@ -137,14 +147,14 @@ export const FFDate: React.FC = () => {
       <div className="flex flex-row w-full justify-between mb-[3rem]">
         <button
           onClick={handleBack}
-          className="mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
+          className="mb-[4rem] sm:mb-0 mt-[1rem] sm:mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
         >
           <FaAngleLeft></FaAngleLeft>
           <p>Back</p>
         </button>
         <button
           onClick={handleHome}
-          className="mt-[5rem] flex flex-row justify-center items-center gap-2  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
+          className="mb-[4rem] sm:mb-0 mt-[1rem] sm:mt-[5rem] flex flex-row justify-center items-center gap-2  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
         >
           <p>Home</p>
           <FaHome></FaHome>

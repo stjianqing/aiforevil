@@ -164,9 +164,7 @@ export const InputCoordinates: React.FC = () => {
           <div className="flex p-1 flex-wrap justify-around w-full">
             <div className="flex items-start">
               <div className="flex flex-col">
-                <p className="flex flex-row font-semibold text-lg">
-                  Latitude:{" "}
-                </p>
+                <p className="flex flex-row font-semibold text-lg">Latitude:</p>
                 <p className="flex flex-row w-fit font-semibold text-lg">
                   Longtitude:
                 </p>

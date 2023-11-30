@@ -116,7 +116,7 @@ export const InputCoordinates: React.FC = () => {
         <div className="w-screen h-screen bg-black opacity-70 fixed"></div>
       ) : null}
       <div className="flex w-screen h-screen flex-col pt-[2rem] ">
-        <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
+        <h1 className="text-black sm:text-5xl text-2xl justify-center flex font-semibold p-3 mx-[3rem]">
           Find Forest
         </h1>
         <div className="flex flex-row w-full px-3">
@@ -163,30 +163,34 @@ export const InputCoordinates: React.FC = () => {
           <div className="flex p-1 flex-wrap justify-around w-full">
             <div className="flex items-start">
               <div className="flex flex-col">
-                <p className="flex flex-row font-semibold text-lg">
-                  Latitude:{" "}
+                <p className="flex flex-row font-semibold text-md sm:text-lg">
+                  Latitude:
                 </p>
-                <p className="flex flex-row w-fit font-semibold text-lg">
+                <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
                   Longtitude:
                 </p>
-                <p className="flex flex-row w-fit font-semibold text-lg">
+                <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
                   Date:
                 </p>
               </div>
               <div className="flex flex-col w-fit ml-[1rem]">
-                <p className="flex flex-row w-fit text-lg"> {latitude}</p>
-                <p className="flex flex-row w-fit text-lg"> {longitude}</p>
-                <p className="flex flex-row w-fit text-lg"> {date}</p>
+                <p className="flex flex-row w-fit text-md sm:text-lg">
+                  {latitude}
+                </p>
+                <p className="flex flex-row w-fit text-md sm:text-lg">
+                  {longitude}
+                </p>
+                <p className="flex flex-row w-fit text-md sm:text-lg">{date}</p>
               </div>
             </div>
             <div className="flex flex-col mx-[1rem] items-center">
-              <p className="text-2xl text-black p-[1rem] ">
+              <p className="text-lg sm:text-2xl text-black p-[1rem] ">
                 Crop to your area of interest
               </p>
               <div className="flex flex-row  ">
                 <Cropper
                   ref={cropperRef}
-                  className="w-[400px] h-[400px] mx-5"
+                  className=" w-[350px] h-[350px] sm:w-[400px] sm:h-[400px] mx-5"
                   zoomable={false}
                   initialAspectRatio={1}
                   preview=".img-preview"
@@ -202,7 +206,7 @@ export const InputCoordinates: React.FC = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col w-[8rem]"></div>
+            {/* <div className="flex flex-col w-[8rem]"></div> */}
           </div>
         </div>
 
@@ -227,12 +231,13 @@ export const InputCoordinates: React.FC = () => {
         {cropped ? (
           <div className="h-full w-screen fixed flex justify-center items-center">
             <div className=" fixed bg-white flex justify-center items-center flex-col px-[2rem] mb-[2rem] mx-[1rem]">
-              <h3 className="text-xl pt-[2rem]"> Area of Interest</h3>
+              <h3 className="text-lg sm:text-xl pt-[2rem]">Area of Interest</h3>
               <img
-                className="w-[25rem] h-[25rem] object-contain m-5"
+                className="w-[20rem] h-[20rem] sm:w-[25rem] sm:h-[25rem] object-contain m-5"
                 src={cropData}
                 alt="cropped"
               />
+
               <div className="flex flex-row justify-between mb-[2rem]">
                 <button
                   onClick={toggleModal}

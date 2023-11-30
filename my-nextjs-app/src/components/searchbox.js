@@ -6,7 +6,7 @@ import {
 import React, { useState, createRef, useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 
-export default function SearchBoc( {updateCoordinates }) {
+export default function SearchBoc({ updateCoordinates }) {
   mapboxgl.accessToken =
     "pk.eyJ1IjoieWVva2V3ZWkiLCJhIjoiY2xlcG5wZ3ZmMGUweTNxdGt4ZG1ldGhsYyJ9.HHNGnKUPolWAo5_UYwzCZg";
   const mapContainer = useRef(null);
@@ -40,15 +40,19 @@ export default function SearchBoc( {updateCoordinates }) {
 
   return (
     <>
-      <form>
+      <form className="flex flex-col">
         <SearchBox
           value=""
           onRetrieve={handleSelectLocation}
           accessToken="pk.eyJ1IjoidmFsdWRvbGxhciIsImEiOiJjbG95NTd1dmcwMTR0MmtuOW5mbGZjYXBlIn0.sKTGeqZyqi8BRP2O_0A8Xg"
+          className="w-[18rem] sm:w-full "
         />
       </form>
       <div>
-        <div ref={mapContainer} className="w-[30rem] h-[20rem] text-xs" />
+        <div
+          ref={mapContainer}
+          className="sm:w-[30rem] sm:h-[20rem] text-xs w-[18rem] h-[18rem]"
+        />
       </div>
     </>
   );
