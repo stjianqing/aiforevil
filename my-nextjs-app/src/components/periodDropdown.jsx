@@ -17,15 +17,6 @@ export default function PeriodDropDown({handlePeriodChange}) {
         <ChevronDownIcon className="w-[1rem] h-[1rem] mx-[1rem]" aria-hidden="true" />
       </Menu.Button>
 
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
         
         <Menu.Items className="flex flex-col my-[0.5rem] w-[14rem] rounded-xl text-xl border-gray">
         <div>
@@ -34,7 +25,7 @@ export default function PeriodDropDown({handlePeriodChange}) {
                 <a
                   href="#"
                   className={`${
-                    active ? ' text-black hover:bg-gray p-[1rem] my-[0.5rem] py-[0.5rem] rounded-lg '  : 'p-[1rem] py-[0.5rem] text-black'
+                    active ? ' text-black hover:bg-gray p-[1rem] py-[0.5rem] rounded-lg '  : ' p-[1rem] py-[0.5rem] rounded-lg '
                   } block`}
                   onClick={() => updatePeriod("3 months")}
                 >
@@ -47,7 +38,7 @@ export default function PeriodDropDown({handlePeriodChange}) {
                 <a
                   href="#"
                   className={`${
-                    active ? ' text-black hover:bg-gray p-[1rem] my-[0.5rem] py-[0.5rem] rounded-lg ' : 'p-[1rem] py-[0.5rem] text-black'
+                    active ? ' text-black hover:bg-gray p-[1rem] py-[0.5rem] rounded-lg ' : ' p-[1rem] py-[0.5rem] rounded-lg '
                   } block`}
                   onClick={() => updatePeriod("6 months")}
                 >
@@ -60,7 +51,7 @@ export default function PeriodDropDown({handlePeriodChange}) {
                 <a
                   href="#"
                   className={`${
-                    active ? 'text-black hover:bg-gray p-[1rem] my-[0.5rem] py-[0.5rem] rounded-lg ' : 'p-[1rem]  py-[0.5rem] text-black'
+                    active ? 'text-black hover:bg-gray p-[1rem] py-[0.5rem] rounded-lg ' : ' p-[1rem] py-[0.5rem] rounded-lg '
                   } block`}
                   onClick={() => updatePeriod("9 months")}
                 >
@@ -73,7 +64,7 @@ export default function PeriodDropDown({handlePeriodChange}) {
                 <a
                   href="#"
                   className={`${
-                    active ? ' text-black hover:bg-gray p-[1rem] my-[0.5rem] py-[0.5rem] rounded-lg ' : 'p-[1rem] my-[0.5 rem] py-[0.5rem] text-black'
+                    active ? ' text-black hover:bg-gray p-[1rem] py-[0.5rem] rounded-lg ' : ' p-[1rem] py-[0.5rem] rounded-lg '
                   } block`}
                   onClick={() => updatePeriod("12 months")}
                 >
@@ -83,7 +74,6 @@ export default function PeriodDropDown({handlePeriodChange}) {
             </Menu.Item>
             </div>
         </Menu.Items>
-      </Transition>
     </Menu>
   );
 }
