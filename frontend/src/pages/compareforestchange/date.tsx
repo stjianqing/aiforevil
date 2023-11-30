@@ -1,52 +1,60 @@
 import React, { useState, createRef, useEffect } from "react";
 import { useRouter } from "next/router";
 
-export const FFDate: React.FC = () => {
+export const FCDate: React.FC = () => {
   const router = useRouter();
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
-  const [date1, setDate] = useState("");
+  const [date1, setDate1] = useState("");
+  const [date2, setDate2] = useState("");
 
   async function handleConfirm() {
-    const req = await fetch('http://127.0.0.1:5000/api/location-coord',{
+    const req1 = await fetch('http://127.0.0.1:5000/api/location-coord',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({latitude, longitude, date1})
+      body: JSON.stringify({latitude, longitude, date: date1})
+    });
+
+    const req2 = await fetch('http://127.0.0.1:5000/api/location-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({latitude, longitude, date: date2})
     });
 
     router.push({
-      pathname: "/findforest/crop",
-      query: {
-        latitude: latitude,
-        longitude: longitude,
-        date: date1,
-      },
+      pathname: "/compareforestchange/crop",
+      query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2},
     });
-  }
-
-  function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setDate(e.target.value);
   }
 
   function handleBack() {
     router.push({
-        pathname: "/findforest/coordinates",
+        pathname: "/compareforestchange/coordinates",
       })
   };
 
+  function handleDate1Change(e: React.ChangeEvent<HTMLInputElement>) {
+    setDate1(e.target.value);
+  }
+
+  function handleDate2Change(e: React.ChangeEvent<HTMLInputElement>) {
+    setDate2(e.target.value);
+  }
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
       <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
-        Find Forest
+        Forest Change
       </h1>
       <div className = "flex flex-row w-full px-3">
-      <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem]">
+      <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-pink w-1/4 m-[1rem]">
             <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
           </svg>
 
-          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-green w-1/4 m-[1rem] ">
+          <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-pink w-1/4 m-[1rem] ">
           <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z"/>
         </svg>
         <svg height="6" viewBox="0 0 423 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="fill-gray w-1/4 m-[1rem] ">
@@ -72,24 +80,28 @@ export const FFDate: React.FC = () => {
 
       <div className="flex flex-row flex-wrap justify-center mt-[2rem]">
         <div className="flex flex-col mt-[1rem] mx-[5rem] ">
-          <label className = " text-3xl font-medium">Date: </label>
-          <input className = "my-[1rem] text-xl border-black border rounded-lg p-[0.5rem]" type="date" onChange={handleDateChange}></input>
+          <label className = " text-3xl font-medium">Date 1: </label>
+          <input className = "my-[1rem] text-xl border-black border rounded-lg p-[0.5rem]" type="date" onChange={handleDate1Change}></input>
+        </div>
+        <div className = "flex flex-col mt-[1rem] justify-center mx-[5rem]">
+          <p className = "text-3xl font-medium">Date 2: </p>
+          <input className = "my-[1rem] text-xl border-black border rounded-lg p-[0.5rem]" type="date" onChange={handleDate2Change}></input>
         </div>
       </div> 
     
       <div className = "h-full">
       </div>
 
-      <div className = "flex flex-row w-full justify-between mt-[1rem] mb-[3rem]">
+      <div className = "flex flex-row w-full justify-between mb-[3rem]">
         <button
           onClick={handleBack}
-          className="mt-[5rem] font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 mx-[2rem]"
+          className="mt-[5rem] font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
         >
           Back
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[5rem] font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mx-[2rem]"
+          className="mt-[5rem] font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
         >
           Confirm
         </button>
@@ -98,4 +110,4 @@ export const FFDate: React.FC = () => {
   )
 };
 
-export default FFDate;
+export default FCDate;

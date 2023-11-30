@@ -2,6 +2,7 @@ import React, { useState, createRef, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import html2pdf from 'html2pdf.js';
+import { get } from "http";
 
 export const FFDate: React.FC = () => {
   const router = useRouter();
@@ -17,10 +18,6 @@ export const FFDate: React.FC = () => {
     })
       .then(res => res.json())
       .then(data => {setImage(data.url)})
-  }
-
-  function handleConfirm() {
-    router.push("/findforest/crop");
   }
 
   function handleBack() {

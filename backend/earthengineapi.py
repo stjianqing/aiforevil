@@ -2,19 +2,27 @@ from google.oauth2 import service_account
 import ee
 from google.cloud import storage
 import time
+from PIL import Image
+import requests
+from pathlib import Path
 
-print("hello world")
+
 # TODO: Have not fully finished
 class GoogleApi:
     def __init__(self, START_DATE='2020-06-01', END_DATE='2020-09-01', latlong=None):
-        self.SERVICE_ACCOUNT_FILE = r'C:/Users/stjia/Desktop/Term 7/aiforevil/S2cloudless/service_account.json'
+        self.SERVICE_ACCOUNT_FILE = r'./service_account.json'
         self.service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
         self.credentials = ee.ServiceAccountCredentials(self.service_account_email, self.SERVICE_ACCOUNT_FILE)
+        self.full_image_url_tiff= 'https://storage.googleapis.com/aiforevil/full_image.tiff'
+        self.full_image_url_jpg= 'https://storage.googleapis.com/aiforevil/full_image.jpg'
+        self.cropped_image_url='https://storage.googleapis.com/aiforevil/cropped_image.tiff'
+        self.cropped_image_url='https://storage.googleapis.com/aiforevil/cropped_image.jpg'
+        self.local_full_image_path= '/your/desired/path/full_image.jpg'
+        self.local_cropped_image_path= '/your/desired/path/cropped_image.jpg'
         ee.Initialize(self.credentials)
         # AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39) # cuc phong
-        latlong=[11.577, 106.94]
-        point_coordinate=
-        self.AOI = ee.Geometry.BBox(106.94, 11.577, 107.38, 11.126) # cat tien
+        self.latlong=latlong
+        self.AOI = ee.Geometry.BBox(latlong) # cat tien
         self.START_DATE=START_DATE
         self.END_DATE = END_DATE
         self.CLOUD_FILTER = 60
@@ -82,16 +90,24 @@ class GoogleApi:
             .reproject(**{'crs': img.select([0]).projection(), 'scale': 20})
             .rename('cloudmask'))
         return img_cloud_shadow.addBands(is_cld_shdw)
-
-    def
-
-    def upload(self, crop=False):
+    
+    def tiff_to_jpg(self):
+        im = Image.open('https://storage.googleapis.com/aiforevil/full_image.tiff')
+        jpeg_image = im.convert("RGB")
+        jpeg_image.save("full_image.jpg")
+        storage_client = storage.Client()
+        bucket = storage_client.bucket("AiForEvil")
+        blob = bucket.blob("full_image.jpg")
+        blob.upload_from_filename(self.local_full_image_path)
+        return im.shape
+    
+    def upload(self, crop=False): 
         bucket_name = "aiforevil"
 
         if crop==True:
             export_params = {
                 'image': self.image,
-                'description': 'image_export',  # Export name
+                'description': 'cropped_image',  # Export name
                 'bucket': bucket_name,  # Google Cloud Storage bucket name 
                 'scale': 10,  # Resolution in meters per pixel
                 'region': self.AOI,  # Convert the region geometry to coordinates
@@ -103,6 +119,11 @@ class GoogleApi:
                 print("Exporting... (task ID: {})".format(task.id))
                 time.sleep(30) 
             if task.status()['state'] == 'COMPLETED':
+                url = 'https://storage.googleapis.com/aiforevil/cropped_image.tiff'
+                r = requests.get(url, allow_redirects=True)
+                local_path = '/your/desired/path/cropped_image.tiff'
+                Path(local_path).parent.mkdir(parents=True, exist_ok=True)
+                open(local_path, 'wb').write(r.content)
                 print("Export completed. The image is in your Google Cloud Storage bucket.")
             else:
                 print("Export failed. Check the task status for more details.")
@@ -110,7 +131,7 @@ class GoogleApi:
         else:
             export_params = {
                 'image': self.image,
-                'description': 'image_export',  # Export name
+                'description': 'full_image',  # Export name
                 'bucket': bucket_name,  # Google Cloud Storage bucket name 
                 'scale': 10,  # Resolution in meters per pixel
                 'region': self.point_coordinates,  # Convert the region geometry to coordinates
@@ -123,9 +144,14 @@ class GoogleApi:
                 print("Exporting... (task ID: {})".format(task.id))
                 time.sleep(30) 
             if task.status()['state'] == 'COMPLETED':
-                print("Export completed. The image is in your Google Cloud Storage bucket.")
+                r = requests.get(self.full_image_url_tiff, allow_redirects=True)
+                local_path = '/your/desired/path/full_image.tiff'
+                Path(local_path).parent.mkdir(parents=True, exist_ok=True)
+                open(local_path, 'wb').write(r.content)
+                print("Export completed. The image is in your Google Cloud Storage bucket and in local directory.")
             else:
                 print("Export failed. Check the task status for more details.")
+
 
 if __name__ == '__main__':
     g = GoogleApi()

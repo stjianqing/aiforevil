@@ -28,11 +28,11 @@ sys.path.append("..")
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator, SamPredictor
 
 class EdgeDetector():
-    def __init__(self, checkpoint, model_type, img_path, size=(1024, 1024), segment=True):
+    def __init__(self, checkpoint, model_type, img_path=None, size=(1024, 1024), segment=True):
         self.checkpoint = checkpoint
         self.model_type = model_type
         self.img_path = img_path
-        self.TIF = self.img_path.endswith('.tif')
+        self.TIF = self.img_path.endswith('.tif') if self.img_path is not None else False
         self.size = size
         self.segment = segment
         self.schema = {
@@ -140,7 +140,7 @@ class EdgeDetector():
                 if alpha[col][row] == 255:
                     image[col][row] = [0, 0, 255, 255]
 
-        cv2.imwrite(f"overlay.png", image)
+        cv2.imwrite(f"./img/overlay_img.png", image)
 
         if self.TIF:
             self._generate_shapefile(alpha, contours)
@@ -188,25 +188,28 @@ class EdgeDetector():
 
         multipolygon = MultiPolygon(polygons)
 
-        with fiona.open('output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+        with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
             c.write({
                 'geometry': mapping(multipolygon),
                 'properties': {'id': 0},
             })
 
-    def run(self):
+    def run(self, img_path):
+        if self.img_path is None:
+            self.img_path = img_path
+            self.TIF = self.img_path.endswith('.tif')
         self._preprocess()
         print('Processing...')
         self._process()
         print('Finished!')
 
-# TODO:need to use parser to pass the arguments, which has not been implemented yet
-if __name__ == "__main__":
-    sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
-    model_type = "vit_l"
-    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
+# # TODO:need to use parser to pass the arguments, which has not been implemented yet
+# if __name__ == "__main__":
+#     sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
+#     model_type = "vit_l"
+#     # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
 
-    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
-    edge_detector = EdgeDetector(sam_checkpoint, model_type, img_path)
-    edge_detector.run()
+#     img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
+#     edge_detector = EdgeDetector(sam_checkpoint, model_type, img_path)
+#     edge_detector.run()
 
