@@ -140,7 +140,8 @@ class EdgeDetector():
                 if alpha[col][row] == 255:
                     image[col][row] = [0, 0, 255, 255]
 
-        cv2.imwrite(f"./img/overlay_img.png", image)
+        # cv2.imwrite(f"./img/overlay.png", image)
+        cv2.imwrite(f"../frontend/public/overlay.png", image)
 
         if self.TIF:
             self._generate_shapefile(alpha, contours)
@@ -188,7 +189,8 @@ class EdgeDetector():
 
         multipolygon = MultiPolygon(polygons)
 
-        with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+        # with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+        with fiona.open('../frontend/public/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
             c.write({
                 'geometry': mapping(multipolygon),
                 'properties': {'id': 0},
@@ -203,13 +205,13 @@ class EdgeDetector():
         self._process()
         print('Finished!')
 
-# # TODO:need to use parser to pass the arguments, which has not been implemented yet
-# if __name__ == "__main__":
-#     sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
-#     model_type = "vit_l"
-#     # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
+# TODO:need to use parser to pass the arguments, which has not been implemented yet
+if __name__ == "__main__":
+    sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
+    model_type = "vit_l"
+    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
 
-#     img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
-#     edge_detector = EdgeDetector(sam_checkpoint, model_type, img_path)
-#     edge_detector.run()
+    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
+    edge_detector = EdgeDetector(sam_checkpoint, model_type, img_path)
+    edge_detector.run()
 
