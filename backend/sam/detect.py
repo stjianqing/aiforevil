@@ -28,19 +28,26 @@ sys.path.append("..")
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator, SamPredictor
 
 class EdgeDetector():
-    def __init__(self, checkpoint, model_type, img_path=None, size=(1024, 1024), segment=True):
+    def __init__(self, checkpoint, model_type, size=(1024, 1024)):
         self.checkpoint = checkpoint
         self.model_type = model_type
-        self.img_path = img_path
-        self.TIF = self.img_path.endswith('.tif') if self.img_path is not None else False
         self.size = size
-        self.segment = segment
+        self.img_size = None
+
+        self.img_path = None
+        self.TIF = False
         self.schema = {
                 'geometry': 'Polygon',
-                'properties': {'id': 'int'},
+                'properties': {'id': 'int', 'name':'str'},
             }
+        self.compare = False
 
-        self.img_size = None
+        self.alpha = None
+        self.multipolygon = None
+
+        self.compare_segment = None
+        self.compare_shapefile = None
+
         if torch.cuda.is_available():
             self.device = "cuda"
         else:
@@ -95,6 +102,27 @@ class EdgeDetector():
                                     ])
         self.point_label = np.array([1]) # Labels: 1 is add, 0 is remove
 
+    def overlay(self, segmentation):
+        """
+        Applies an overlay effect to the original image using the provided segmentation.
+
+        Parameters:
+            segmentation (numpy.ndarray): The segmentation mask to be applied as an overlay. 
+                The mask should have the same dimensions as the original image.
+
+        Returns:
+            numpy.ndarray: The resulting image with the overlay effect applied.
+        """
+        image = self.original_img.copy()
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
+        tmp = cv2.cvtColor(segmentation, cv2.COLOR_BGR2GRAY)
+        _, overlay_alpha = cv2.threshold(tmp, 0, 128, cv2.THRESH_BINARY)
+        b, g, r = cv2.split(segmentation)
+        rgba = [r, g, b, overlay_alpha]
+        segment = cv2.merge(rgba, 4)
+        cv2.addWeighted(segment, 0.5, image, 1, 0, image)
+        return image
+
     def _process(self):
         """
         Process the image by applying segmentation and generating an overlay.
@@ -128,30 +156,20 @@ class EdgeDetector():
 
         gray = cv2.cvtColor(segmentation, cv2.COLOR_BGR2GRAY)
         _, alpha = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
+        self.alpha = alpha # get the binary segmentation
         contours, _ = cv2.findContours(gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         for contour in contours:
             if len(contour) <= 1000:
                 cv2.drawContours(alpha, [contour], -1, (0, 0, 0, 100), thickness=cv2.FILLED)
 
-        image = cv2.cvtColor(self.original_img, cv2.COLOR_BGR2RGBA)
-        for col in range(alpha.shape[0]):
-            for row in range(alpha.shape[1]):
-                if alpha[col][row] == 255:
-                    image[col][row] = [0, 0, 255, 255]
+        image = self.overlay(segmentation)
 
-        cv2.imwrite(f"./img/overlay_img.png", image)
+        cv2.imwrite(f"../img/overlay.png", image)
+        # cv2.imwrite(f"../frontend/public/overlay.png", image)
 
         if self.TIF:
             self._generate_shapefile(alpha, contours)
-
-    # this function is only being used when we use automated mask
-    def max_area(self, masks):
-        sorted_masks = sorted(masks, key=lambda x: x['area'], reverse=True)
-        # NOTE: there might have chances where the forest is not the largest area of the image
-        area = [seg['area'] for seg in masks]
-        i = area.index(max(area))
-        return sorted_masks[0]['segmentation']
 
     def _generate_shapefile(self, segment, contours):
         """
@@ -186,30 +204,75 @@ class EdgeDetector():
                 polygon = Polygon(points)
                 polygons.append(polygon)
 
-        multipolygon = MultiPolygon(polygons)
+        self.multipolygon = MultiPolygon(polygons)
 
-        with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+        with fiona.open('../img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+        # with fiona.open('../frontend/public/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
             c.write({
-                'geometry': mapping(multipolygon),
-                'properties': {'id': 0},
+                'geometry': mapping(self.multipolygon),
+                'properties': {'id': 0, 'name':'segmented shape'},
             })
 
-    def run(self, img_path):
-        if self.img_path is None:
-            self.img_path = img_path
-            self.TIF = self.img_path.endswith('.tif')
+    def _compare(self):
+        """
+        Compares the alpha channel of the image with a given segment and generates a segmented image.
+        Saves the segmented image (comparison) and shapefile
+
+        Returns:
+            None
+        """
+        assert self.alpha.shape == self.compare_segment.shape, ValueError("Shape mismatch")
+
+        segment = np.zeros_like(self.original_img)
+
+        alpha = self.alpha == 255
+        compare_segment = self.compare_segment == 255
+
+        segment[alpha & compare_segment] = [255, 0, 255]
+        segment[alpha & ~compare_segment] = [0, 0, 255]
+        segment[~alpha & compare_segment] = [255, 0, 0]
+
+        image = self.overlay(segment)
+
+        cv2.imwrite(f"../img/overlay_comparison.png", image)
+
+        difference = self.multipolygon.difference(self.compare_shapefile)
+        union = self.multipolygon.union(self.compare_shapefile)
+
+        with fiona.open('../img/comparison_output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+            c.write({
+                'geometry': mapping(difference),
+                'properties': {'id': 0, 'name': 'difference'},
+            })
+            c.write({
+                'geometry': mapping(union),
+                'properties': {'id': 1, 'name': 'union'},
+            })
+
+    def run(self, img_path=None, compare_segment=None, compare_shapefile=None):
+        self.img_path = img_path
+        self.TIF = self.img_path.endswith('.tif')
+        if compare_segment is not None:
+            self.compare_segment = compare_segment
+            self.compare_shapefile = compare_shapefile
+            self.compare = True
         self._preprocess()
         print('Processing...')
         self._process()
+        if self.compare:
+            print('Comparing...')
+            self._compare()
         print('Finished!')
+        return self.alpha, self.multipolygon
 
-# # TODO:need to use parser to pass the arguments, which has not been implemented yet
-# if __name__ == "__main__":
-#     sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
-#     model_type = "vit_l"
-#     # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
+# TODO:need to use parser to pass the arguments, which has not been implemented yet
+if __name__ == "__main__":
+    sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
+    model_type = "vit_l"
+    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
+    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (16).tif" # cuc phuong
+    edge_detector = EdgeDetector(sam_checkpoint, model_type)
+    segment, multipolygon = edge_detector.run(img_path)
 
-#     img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
-#     edge_detector = EdgeDetector(sam_checkpoint, model_type, img_path)
-#     edge_detector.run()
-
+    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
+    edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)

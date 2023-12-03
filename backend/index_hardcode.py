@@ -53,9 +53,10 @@ def send_cropped_coordinates():
 @app.route('/api/get-segment', methods=['GET'])
 def get_segment():
     model.run('./img/cropped_cuc_phuong.tif')
+
     #TODO: update the url
     # responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
-    responses = jsonify({'url': 'C:/Users/ruiya/Desktop/aiforevil/backend/img/overlay_img.png'})
+    responses = jsonify({'url': '/overlay.png'})
     return responses
 
 if __name__ == '__main__':
