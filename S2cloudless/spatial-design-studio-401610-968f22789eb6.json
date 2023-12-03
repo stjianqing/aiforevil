@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "spatial-design-studio-401610",
+  "private_key_id": "968f22789eb6246f5d7bb337706b25b65df06bce",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCzquUKWEwm+40L\nBFllu+1NDpPsPpJfm6By5/MQdNbBoHWMRCyQdSH5+loEfSzJkTTbepMuU0cuvEDo\nDJ7OJlQDFI+j0PavwYNRX7lBeqiUCKzC1t7PAWUtlHB5imG7sosBSyoSSXb+taW+\n46e87bXQ+TiFHqmbRRLBPUP0X/c81QaklXmgvY01+JJiKhy9I2FKvQpl0HPMD95c\nwW7jt5M/oI/+nd8LjnQ17RWiNGiWDQpaDAK1lJfkayJVPhOA4701HmliLW+LZJdU\neuBXNN+Ui9pIngZ3/aGaEBsATWptMEQlRiaanUrLKFdySLhFACmDto11hk9ljry/\nHU4bgPJXAgMBAAECggEAE0S2KJxcmmeq8i4GumLjqbpxAcqaHxfNJtWaWz70kzJ2\nuNLM5rcxLCJ9yfJ0va9NeGZWZ4b14Ny+p0RHObuhke0AFKUB98psn2sBLrUNZEbj\n5EdwAMpZBADh6R7+qUcWIk7h1bE8SkfH3UeEAz6JG77GoXwu22CWiNPduFUcalEO\nGqMqk6NSwGKatF6EAPw4escCNFfscMQFtt/bDE/9zzAUEGzpmNBWrqq8l1mcx+/F\n7L3lU3GqzaHIm/7e2+DPJMEonlzGL1vj+wRtUY4m/NoQNZy+88ATsA1bA/RfE6SM\ngU0XMgMtxzCzwB8ai5EdGqVAOrjO6FoyklBd1gy51QKBgQDsnR0KFiBm3TzJbhe3\nHZ+BUeGi5O6d1/H68Md7qDYw8CUE+JbFFwEY5VlThDlm8IgndFTRRLATM+Wswf/r\nnVgab5C5wOuZ2CetuynNpOSPp34prN3RzuMtgr4++A64V0J6PV8XS58C8CjjoFn/\nYP54B4k1YzOH0tAGosk0g9mfSwKBgQDCY1suHUshAMbkCPPXs0jjj1JKQtSokD7x\nbiQYMiAAmVD93ZSouckp42uE/vVydyaE3taRtpICyzK3IGtqt1uqb7rDqXAlIlgN\ntz3dpZplMmti21jjnoV3h0PC45IoeoG77ML28A+bhi/ztUXXHZqguJJsO5bi2SpO\n3m39yVB1pQKBgGpJPSUtwUpTsR2Ojaqc7OyLWn7wtVtECJe/luwuKIGdLhPoktlf\ntwd25sRETgC2pYKLmBoU778Affg3gP1WxZ/CY9F9HpgR5+j7fRC6NE1vYJXZ6B55\n/8SOyWTByuL1l5APh2qQdpI8TTHK8wJrkINcZz8LG7e0c+u3Lgif/Z63AoGAFCYK\nSHBe3i/fbbmD1OLPdk7fv7THqCUzcQDymtNvP8CkhXvXMdn4APCCr4lh1ZiGFJWo\ndfgPkFyRiCvDFo+k37ivCiLg7ehuahWJQxUsOLsOKHQF9anzuZz6qBPAjZONKPZ0\nivX9GCjDhaZPc+msomYfPzq5/A94dC5YBks8nMUCgYBjKZ5MG5k7nMmMSyu0s9tZ\nd+WTK+1xCzcW4QHANtnHgdnxFKjpq9Qea6pUu/b33aY6snhOrwG4/kuq5A0Ouxh/\nzKvSlvNu58BHYomQwxemTuGgebCQHugdQBcM/R329yFe9tKrT2mBRfK3UWRt478G\nAJogP9/JP5ZjYU0w+BVCSg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "spatial-design-studio-401610@appspot.gserviceaccount.com",
+  "client_id": "112414578676851930897",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/spatial-design-studio-401610%40appspot.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
