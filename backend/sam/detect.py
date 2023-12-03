@@ -166,7 +166,6 @@ class EdgeDetector():
         image = self.overlay(segmentation)
 
         cv2.imwrite(f"../img/overlay.png", image)
-        # cv2.imwrite(f"../frontend/public/overlay.png", image)
 
         if self.TIF:
             self._generate_shapefile(alpha, contours)
@@ -207,7 +206,6 @@ class EdgeDetector():
         self.multipolygon = MultiPolygon(polygons)
 
         with fiona.open('../img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
-        # with fiona.open('../frontend/public/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
             c.write({
                 'geometry': mapping(self.multipolygon),
                 'properties': {'id': 0, 'name':'segmented shape'},
@@ -265,7 +263,6 @@ class EdgeDetector():
         print('Finished!')
         return self.alpha, self.multipolygon
 
-# TODO:need to use parser to pass the arguments, which has not been implemented yet
 if __name__ == "__main__":
     sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
     model_type = "vit_l"
