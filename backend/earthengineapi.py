@@ -5,24 +5,31 @@ import time
 from PIL import Image
 import requests
 from pathlib import Path
+from wand.image import Image as WandImage
+from wand.exceptions import WandException
+import tifffile
 
-
-# TODO: Have not fully finished
 class GoogleApi:
     def __init__(self, START_DATE='2020-06-01', END_DATE='2020-09-01', latlong=None):
-        self.SERVICE_ACCOUNT_FILE = r'./service_account.json'
-        self.service_account_email = 'ry-handsome-chap@spatial-design-studio-401610.iam.gserviceaccount.com'
+        self.SERVICE_ACCOUNT_FILE = r'./backend/spatial-design-studio-401610-968f22789eb6.json'
+        self.service_account_email = "spatial-design-studio-401610@appspot.gserviceaccount.com"
         self.credentials = ee.ServiceAccountCredentials(self.service_account_email, self.SERVICE_ACCOUNT_FILE)
-        self.full_image_url_tiff= 'https://storage.googleapis.com/aiforevil/full_image.tiff'
+        self.full_image_url_tiff= 'https://storage.googleapis.com/aiforevil/full_image.tif'
         self.full_image_url_jpg= 'https://storage.googleapis.com/aiforevil/full_image.jpg'
-        self.cropped_image_url='https://storage.googleapis.com/aiforevil/cropped_image.tiff'
+        self.cropped_image_url='https://storage.googleapis.com/aiforevil/cropped_image.tif'
         self.cropped_image_url='https://storage.googleapis.com/aiforevil/cropped_image.jpg'
-        self.local_full_image_path= '/your/desired/path/full_image.jpg'
-        self.local_cropped_image_path= '/your/desired/path/cropped_image.jpg'
+        self.local_full_image_path= './img/full_image.jpg'
+        self.local_cropped_image_path= './img/cropped_image.jpg'
         ee.Initialize(self.credentials)
-        # AOI = ee.Geometry.BBox(105.50, 20.23, 105.74, 20.39) # cuc phong
+        self.START_DATE=START_DATE
+        self.END_DATE = END_DATE
         self.latlong=latlong
-        self.AOI = ee.Geometry.BBox(latlong) # cat tien
+        self.temp_aoi=ee.Geometry.BBox(self.latlong[1], self.latlong[0], self.latlong[1]+0.1, self.latlong[0]+0.1)
+        if len(latlong)>2:
+            self.AOI=ee.Geometry.BBox(*latlong)
+        else:
+            self.AOI=self.full_tile_bbox()
+        self.longlat=(latlong[1], latlong[0])
         self.START_DATE=START_DATE
         self.END_DATE = END_DATE
         self.CLOUD_FILTER = 60
@@ -30,18 +37,6 @@ class GoogleApi:
         self.NIR_DRK_THRESH = 0.15
         self.CLD_PRJ_DIST = 2
         self.BUFFER = 100
-        self.s2_sr_cld_col = self.get_s2_sr_cld_col()
-        self.trueColorVis = {
-                            'bands': ['B4', 'B3', 'B2'],
-                            'min': "0.0",
-                            'max': "3000.0"
-                            }
-        self.image = (self.s2_sr_cld_col.map(self.add_cld_shdw_mask)
-                             .map(self.apply_cld_shdw_mask)
-                             .median()
-                             ._apply_visualization(self.trueColorVis)
-                             )[0]
-
 
     def get_s2_sr_cld_col(self):
             s2_sr_col = (ee.ImageCollection('COPERNICUS/S2_SR')
@@ -91,18 +86,53 @@ class GoogleApi:
             .rename('cloudmask'))
         return img_cloud_shadow.addBands(is_cld_shdw)
     
-    def tiff_to_jpg(self):
-        im = Image.open('https://storage.googleapis.com/aiforevil/full_image.tiff')
-        jpeg_image = im.convert("RGB")
-        jpeg_image.save("full_image.jpg")
-        storage_client = storage.Client()
-        bucket = storage_client.bucket("AiForEvil")
-        blob = bucket.blob("full_image.jpg")
-        blob.upload_from_filename(self.local_full_image_path)
-        return im.shape
+    def tiff_to_jpg(self, full_image=True):
+        if full_image==True:
+            input_tiff_path = './backend/img/full_image.tif'
+            output_jpg_path = './backend/img/full_image.jpg'
+        else:
+            input_tiff_path = './backend/img/cropped_image.tif'
+            output_jpg_path = './backend/img/cropped_image.jpg'
+        try:
+            with WandImage(filename=input_tiff_path) as img:
+                img.format = 'jpeg'
+                img.save(filename=output_jpg_path)
+            storage_client = storage.Client.from_service_account_json(self.SERVICE_ACCOUNT_FILE)
+            bucket = storage_client.bucket("aiforevil")
+            blob = bucket.blob("full_image.jpg")
+            blob.upload_from_filename(output_jpg_path)
+
+        except WandException as e:
+            print(f"Error: {e}")
     
+    def full_tile_bbox(self):
+        image=ee.ImageCollection('COPERNICUS/S2_SR').filterBounds(self.temp_aoi).filterDate(self.START_DATE, self.END_DATE).first()
+        s2_sr_median = image.select("B4")
+        s2_sr_median=s2_sr_median.reproject(crs='EPSG:4326')
+        latlon=s2_sr_median.pixelLonLat()
+        image=s2_sr_median.addBands(latlon.select(["longitude", "latitude"]))
+        full_tile_coordinates=image.geometry().bounds().coordinates().getInfo()
+        first_coordinates=full_tile_coordinates[0][0]
+        third_coordinates=full_tile_coordinates[0][2]
+        full_tile_bbox=(*first_coordinates, *third_coordinates)
+        formatted_bbox = tuple(float("{:.2f}".format(value)[:-1])-.1 for value in full_tile_bbox)
+        formatted_bbox=ee.Geometry.BBox(*formatted_bbox)
+        return formatted_bbox
+
+
     def upload(self, crop=False): 
         bucket_name = "aiforevil"
+        self.s2_sr_cld_col = self.get_s2_sr_cld_col()
+        self.trueColorVis = {
+                            'bands': ['B4', 'B3', 'B2'],
+                            'min': "0.0",
+                            'max': "3000.0"
+                            }
+        self.image = (self.s2_sr_cld_col.map(self.add_cld_shdw_mask)
+                             .map(self.apply_cld_shdw_mask)
+                             .median()
+                             ._apply_visualization(self.trueColorVis)
+                             )[0]
 
         if crop==True:
             export_params = {
@@ -117,13 +147,12 @@ class GoogleApi:
             task.start()
             while task.active():
                 print("Exporting... (task ID: {})".format(task.id))
-                time.sleep(30) 
+                time.sleep(60) 
             if task.status()['state'] == 'COMPLETED':
-                url = 'https://storage.googleapis.com/aiforevil/cropped_image.tiff'
-                r = requests.get(url, allow_redirects=True)
-                local_path = '/your/desired/path/cropped_image.tiff'
-                Path(local_path).parent.mkdir(parents=True, exist_ok=True)
-                open(local_path, 'wb').write(r.content)
+                client=storage.Client.from_service_account_json("./backend/spatial-design-studio-401610-968f22789eb6.json")
+                bucket = client.get_bucket("aiforevil")
+                blob = bucket.blob("cropped_image.tif")
+                blob.download_to_filename("./backend/img/cropped_image.tif")
                 print("Export completed. The image is in your Google Cloud Storage bucket.")
             else:
                 print("Export failed. Check the task status for more details.")
@@ -134,7 +163,7 @@ class GoogleApi:
                 'description': 'full_image',  # Export name
                 'bucket': bucket_name,  # Google Cloud Storage bucket name 
                 'scale': 10,  # Resolution in meters per pixel
-                'region': self.point_coordinates,  # Convert the region geometry to coordinates
+                'region': self.AOI,  # Convert the region geometry to coordinates
                 'fileFormat': 'GeoTIFF',  # Export format
                 'maxPixels': 1e13
             }
@@ -142,17 +171,18 @@ class GoogleApi:
             task.start()
             while task.active():
                 print("Exporting... (task ID: {})".format(task.id))
-                time.sleep(30) 
+                time.sleep(60) 
             if task.status()['state'] == 'COMPLETED':
-                r = requests.get(self.full_image_url_tiff, allow_redirects=True)
-                local_path = '/your/desired/path/full_image.tiff'
-                Path(local_path).parent.mkdir(parents=True, exist_ok=True)
-                open(local_path, 'wb').write(r.content)
+                client=storage.Client.from_service_account_json("./backend/spatial-design-studio-401610-968f22789eb6.json")
+                bucket = client.get_bucket("aiforevil")
+                blob = bucket.blob("full_image.tif")
+                blob.download_to_filename("./backend/img/full_image.tif")
                 print("Export completed. The image is in your Google Cloud Storage bucket and in local directory.")
             else:
                 print("Export failed. Check the task status for more details.")
 
 
 if __name__ == '__main__':
-    g = GoogleApi()
-    g.upload()
+    g = GoogleApi(latlong=(20.23,105.50))
+    # g.upload()
+    # g.tiff_to_jpg()

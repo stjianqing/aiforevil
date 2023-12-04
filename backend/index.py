@@ -7,16 +7,17 @@ from sam.detect import *
 app = Flask(__name__)
 CORS(app)
 
-sam_checkpoint = "./sam/model/sam_vit_l_0b3195.pth"
-model_type = "vit_l"
+# sam_checkpoint = "./sam/model/sam_vit_l_0b3195.pth"
+# model_type = "vit_l"
 
-model = EdgeDetector(sam_checkpoint, model_type)
+# model = EdgeDetector(sam_checkpoint, model_type)
 
-'''Takes in front-end posted date and uploads image to Google Cloud Storage'''
+# '''Takes in front-end posted date and uploads image to Google Cloud Storage'''
 
 start_date=None
 end_date=None
 img_size = (0,0)
+
 
 @app.route("/api/location-coord", methods=['POST'])
 def send_location_coordinates():
@@ -26,17 +27,17 @@ def send_location_coordinates():
     date = request.json.get('date')
     end_date = datetime.strptime(date, '%Y-%m-%d')
     start_date = end_date - timedelta(days=3 * 30)
-    lat_long = (lat, long)
+    lat_long = (float(lat), float(long))
+    print(lat_long)
     g = GoogleApi(start_date, end_date, lat_long)
     g.upload()  #defaults to full image
+    g.tiff_to_jpg() 
     res = {'latitude': lat, 'longitude': long, 'start_date': start_date, 'end_date': end_date}
     print(res)
     return jsonify(res)
 
 @app.route("/api/get-img", methods=['GET'])
 def get_image():
-    g = GoogleApi()
-    g.tiff_to_jpg() 
     responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/full_image.jpg'})
     return responses
 
