@@ -30,7 +30,7 @@ def send_location_coordinates():
     lat_long = (float(lat), float(long))
     print(lat_long)
     g = GoogleApi(start_date, end_date, lat_long)
-    g.upload()  #defaults to full image
+    g.upload_ee_to_gcp()  #defaults to full image
     g.tiff_to_jpg() 
     res = {'latitude': lat, 'longitude': long, 'start_date': start_date, 'end_date': end_date}
     print(res)
@@ -50,22 +50,25 @@ def send_cropped_coordinates():
     res = {'x1': x1, 'x2': x2, 'y1': y1, 'y2': y2}
     latlong = (x1, y1, x2, y2)
     g = GoogleApi(start_date, end_date, latlong)
-    g.upload(crop=True)
+    g.upload_ee_to_gcp(crop=True)
     print(res)
     return jsonify(res)
 
 @app.route('/api/get-segment', methods=['GET'])
 def get_segment():
-    model.run('./img/cropped_cuc_phuong.tif')
+    model.run('./img/cropped_image.tif')
+    g=GoogleApi()
+    g.upload_to_gcp(local_path='./img/output.shp.zip', gcp_file_name='output.shp.zip')
+    g.upload_to_gcp(local_path='./img/overlay.png', gcp_file_name='overlay.png')
     #TODO: save the segmented image & shapefile to GCS, return the url for image
     #TODO: update the url to the segment image in GCS
-    responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
+    responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/overlay.png'})
     return responses
 
 @app.route('/api/get-difference', methods=['GET'])
 def get_difference():
-    segment, multipolygon = model.run('./img/cropped_cuc_phuong.tif')
-    model.run('./img/cropped_cuc_phuong.tif', segment, multipolygon)
+    segment, multipolygon = model.run('./img/cropped_image.tif')
+    model.run('./img/cropped_image.tif', segment, multipolygon)
     #TODO: save the segmented image & shapefile to GCS, return the url for image
     #TODO: update the url to the comparison for segmented image in GCS
     responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
@@ -74,7 +77,7 @@ def get_difference():
 @app.route('/api/get-shapefile', methods=['GET'])
 def download_shapefile():
     #TODO: update the url to the shapefile in GCS
-    responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/test.jpg'})
+    responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/output.shp.zip'})
     return responses
 
 if __name__ == '__main__':
