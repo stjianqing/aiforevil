@@ -119,8 +119,16 @@ class GoogleApi:
         formatted_bbox=ee.Geometry.BBox(*formatted_bbox)
         return formatted_bbox
 
+    def upload_to_gcp(self, local_path=None, gcp_file_name=None):
+        client=storage.Client.from_service_account_json("./backend/spatial-design-studio-401610-968f22789eb6.json")
+        bucket = client.get_bucket("aiforevil")
+        blob = bucket.blob(gcp_file_name)
+        blob.download_to_filename(local_path)
+        # blob = bucket.blob("cropped_image.tif")
+        # blob.download_to_filename("./backend/img/cropped_image.tif")
 
-    def upload(self, crop=False): 
+
+    def upload_ee_to_gcp(self, crop=False): 
         bucket_name = "aiforevil"
         self.s2_sr_cld_col = self.get_s2_sr_cld_col()
         self.trueColorVis = {
@@ -149,10 +157,7 @@ class GoogleApi:
                 print("Exporting... (task ID: {})".format(task.id))
                 time.sleep(60) 
             if task.status()['state'] == 'COMPLETED':
-                client=storage.Client.from_service_account_json("./backend/spatial-design-studio-401610-968f22789eb6.json")
-                bucket = client.get_bucket("aiforevil")
-                blob = bucket.blob("cropped_image.tif")
-                blob.download_to_filename("./backend/img/cropped_image.tif")
+                self.upload_to_gcp(local_path='./backend/img/cropped_image.tif', gcp_file_name='cropped_image.tif')
                 print("Export completed. The image is in your Google Cloud Storage bucket.")
             else:
                 print("Export failed. Check the task status for more details.")
@@ -173,10 +178,7 @@ class GoogleApi:
                 print("Exporting... (task ID: {})".format(task.id))
                 time.sleep(60) 
             if task.status()['state'] == 'COMPLETED':
-                client=storage.Client.from_service_account_json("./backend/spatial-design-studio-401610-968f22789eb6.json")
-                bucket = client.get_bucket("aiforevil")
-                blob = bucket.blob("full_image.tif")
-                blob.download_to_filename("./backend/img/full_image.tif")
+                self.upload_to_gcp(local_path='./backend/img/full_image.tif', gcp_file_name='full_image.tif')
                 print("Export completed. The image is in your Google Cloud Storage bucket and in local directory.")
             else:
                 print("Export failed. Check the task status for more details.")
