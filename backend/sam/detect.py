@@ -20,19 +20,22 @@ import torch
 import cv2
 import os
 import rasterio
+import shapely
 from shapely.geometry import Polygon, MultiPolygon, mapping
 import fiona
+import geopandas as gpd
 
 import sys
 sys.path.append("..")
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator, SamPredictor
 
 class EdgeDetector():
-    def __init__(self, checkpoint, model_type, size=(1024, 1024)):
+    def __init__(self, checkpoint, model_type, size=(1024, 1024), eval=False):
         self.checkpoint = checkpoint
         self.model_type = model_type
         self.size = size
         self.img_size = None
+        self.eval = eval
 
         self.img_path = None
         self.TIF = False
@@ -163,9 +166,9 @@ class EdgeDetector():
             if len(contour) <= 1000:
                 cv2.drawContours(alpha, [contour], -1, (0, 0, 0, 100), thickness=cv2.FILLED)
 
-        image = self.overlay(segmentation)
-
-        cv2.imwrite(f"../img/overlay.png", image)
+        if not self.eval:
+            image = self.overlay(segmentation)
+            cv2.imwrite(f"../img/overlay.png", image)
 
         if self.TIF:
             self._generate_shapefile(alpha, contours)
@@ -205,11 +208,12 @@ class EdgeDetector():
 
         self.multipolygon = MultiPolygon(polygons)
 
-        with fiona.open('../img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
-            c.write({
-                'geometry': mapping(self.multipolygon),
-                'properties': {'id': 0, 'name':'segmented shape'},
-            })
+        if not self.eval:
+            with fiona.open('../img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(self.multipolygon),
+                    'properties': {'id': 0, 'name':'segmented shape'},
+                })
 
     def _compare(self):
         """
@@ -226,9 +230,8 @@ class EdgeDetector():
         alpha = self.alpha == 255
         compare_segment = self.compare_segment == 255
 
-        segment[alpha & compare_segment] = [255, 0, 255]
-        segment[alpha & ~compare_segment] = [0, 0, 255]
-        segment[~alpha & compare_segment] = [255, 0, 0]
+        segment[alpha] += np.array([0,0,255], dtype=('uint8'))
+        segment[compare_segment] += np.array([255,0,0], dtype=('uint8'))
 
         image = self.overlay(segment)
 
@@ -263,6 +266,20 @@ class EdgeDetector():
         print('Finished!')
         return self.alpha, self.multipolygon
 
+    def evaluate(self, ground_truth):
+        self.eval = True
+
+        print('Evaluating...')
+        gt = gpd.read_file(ground_truth)
+        gt = gt.geometry[0]
+
+        intersect = shapely.intersection(self.multipolygon, gt)
+        union = shapely.union(self.multipolygon, gt)
+
+        iou = intersect.area / union.area
+
+        print('IoU for the segmented shape and the ground truth: ', iou)
+
 if __name__ == "__main__":
     sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
     model_type = "vit_l"
@@ -271,5 +288,8 @@ if __name__ == "__main__":
     edge_detector = EdgeDetector(sam_checkpoint, model_type)
     segment, multipolygon = edge_detector.run(img_path)
 
-    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
-    edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
+    gt_path = './baseline/cuc_phuong'
+    edge_detector.evaluate(gt_path)
+
+    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
+    # edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
