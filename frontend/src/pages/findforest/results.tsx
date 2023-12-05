@@ -33,36 +33,36 @@ export const FFDate: React.FC = () => {
       })
   };
 
-  const htmlContent = `
-    <div>
-      <h2 style="font-size: 2rem; text-align:center; font-family:system-ui; ">Satellite Image in ${date}</h2>
-      <p style="font-size: 1.5rem; text-align:center; font-familt: system-ui;">Location: ${latitude}, ${longitude}</p>
-      <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${image}" alt="Cropped image" width={500} height={500} justify: center></Image>
-    </div>`;
+  // const htmlContent = `
+  //   <div>
+  //     <h2 style="font-size: 2rem; text-align:center; font-family:system-ui; ">Satellite Image in ${date}</h2>
+  //     <p style="font-size: 1.5rem; text-align:center; font-familt: system-ui;">Location: ${latitude}, ${longitude}</p>
+  //     <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${image}" alt="Cropped image" width={500} height={500} justify: center></Image>
+  //   </div>`;
 
-  const DownloadPDFButton = ({}) => {
-    const containerRef = useRef(null);
-    const handleDownload = () => {
-      const element = containerRef.current;
-      const opt =  {
-        margin: 10,
-        filename: "Report.pdf",
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      }
-      html2pdf().set(opt).from(htmlContent).save();
-    };
-    return (
-      <div>
-        <button 
-          onClick={handleDownload}
-          className="mt-[1rem] border border-black rounded-xl p-2 px-[3rem]">
-            Download
-          </button>
-      </div>
-    )
-  };
+  // const DownloadPDFButton = ({}) => {
+  //   const containerRef = useRef(null);
+  //   const handleDownload = () => {
+  //     const element = containerRef.current;
+  //     const opt =  {
+  //       margin: 10,
+  //       filename: "Report.pdf",
+  //       image: { type: 'jpeg', quality: 0.98 },
+  //       html2canvas: { scale: 2 },
+  //       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+  //     }
+  //     html2pdf().set(opt).from(htmlContent).save();
+  //   };
+  //   return (
+  //     <div>
+  //       <button 
+  //         onClick={handleDownload}
+  //         className="mt-[1rem] border border-black rounded-xl p-2 px-[3rem]">
+  //           Download
+  //         </button>
+  //     </div>
+  //   )
+  // };
 
   useEffect(() => {
     getImg();
@@ -108,9 +108,7 @@ export const FFDate: React.FC = () => {
             {image && <Image src={image} alt="Cropped image" width={350} height={350}></Image>}
           </div>
 
-          <div className = "flex flex-col items-center">
-            <DownloadPDFButton />
-          </div>
+          
         </div>
 
         <div className = "flex flex-row w-full justify-between mb-[3rem]">

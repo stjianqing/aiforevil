@@ -24,6 +24,13 @@ export const InputCoordinates: React.FC = () => {
   });
 
   async function getImg(){
+    var body = {x1: 0, y1: 0, x2: 0, y2: 0, date1: date1, date2: date2}
+    body.x1 = croppedCoords.x1
+    body.y1 = croppedCoords.y1
+    body.x2 = croppedCoords.x2
+    body.y2 = croppedCoords.y2
+    body.date1 = date1
+    body.date2 = date2
     const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
       method: 'GET',
     })

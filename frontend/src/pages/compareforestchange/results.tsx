@@ -16,7 +16,7 @@ export const FCResults: React.FC = () => {
 
 
   async function getImg(){
-    const res = await fetch(`http://127.0.0.1:5000/api/get-segment`,{
+    const res = await fetch(`http://127.0.0.1:5000/api/get-difference`,{
       method: 'GET',
     })
       .then(res => res.json())

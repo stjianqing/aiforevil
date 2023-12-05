@@ -7,11 +7,11 @@ import requests
 from pathlib import Path
 from wand.image import Image as WandImage
 from wand.exceptions import WandException
-import tifffile
+# import tifffile
 
 class GoogleApi:
     def __init__(self, START_DATE='2020-06-01', END_DATE='2020-09-01', latlong=None):
-        self.SERVICE_ACCOUNT_FILE = r'./backend/spatial-design-studio-401610-968f22789eb6.json'
+        self.SERVICE_ACCOUNT_FILE = r'./spatial-design-studio-401610-968f22789eb6.json'
         self.service_account_email = "spatial-design-studio-401610@appspot.gserviceaccount.com"
         self.credentials = ee.ServiceAccountCredentials(self.service_account_email, self.SERVICE_ACCOUNT_FILE)
         self.full_image_url_tiff= 'https://storage.googleapis.com/aiforevil/full_image.tif'
@@ -21,15 +21,17 @@ class GoogleApi:
         self.local_full_image_path= './img/full_image.jpg'
         self.local_cropped_image_path= './img/cropped_image.jpg'
         ee.Initialize(self.credentials)
-        self.START_DATE=START_DATE
+        self.START_DATE = START_DATE
         self.END_DATE = END_DATE
-        self.latlong=latlong
-        self.temp_aoi=ee.Geometry.BBox(self.latlong[1], self.latlong[0], self.latlong[1]+0.1, self.latlong[0]+0.1)
-        if len(latlong)>2:
-            self.AOI=ee.Geometry.BBox(*latlong)
-        else:
-            self.AOI=self.full_tile_bbox()
-        self.longlat=(latlong[1], latlong[0])
+        self.latlong = latlong
+        # self.temp_aoi=ee.Geometry.BBox(self.latlong[1], self.latlong[0], self.latlong[1]+0.1, self.latlong[0]+0.1)
+        if latlong is not None:
+            if len(latlong)>2:
+                self.AOI=ee.Geometry.BBox(*latlong)
+            else:
+                self.temp_aoi=ee.Geometry.BBox(self.latlong[1], self.latlong[0], self.latlong[1]+0.1, self.latlong[0]+0.1)
+                self.AOI=self.full_tile_bbox()
+            self.longlat=(latlong[1], latlong[0])
         self.START_DATE=START_DATE
         self.END_DATE = END_DATE
         self.CLOUD_FILTER = 60
@@ -87,19 +89,22 @@ class GoogleApi:
         return img_cloud_shadow.addBands(is_cld_shdw)
     
     def tiff_to_jpg(self, full_image=True):
-        if full_image==True:
-            input_tiff_path = './backend/img/full_image.tif'
-            output_jpg_path = './backend/img/full_image.jpg'
-        else:
-            input_tiff_path = './backend/img/cropped_image.tif'
-            output_jpg_path = './backend/img/cropped_image.jpg'
+        file_name = 'full_image' if full_image else 'cropped_image'
+        input_tiff_path = f'./img/{file_name}.tif'
+        output_jpg_path = f'./img/{file_name}.jpg'
+        # if full_image==True:
+        #     input_tiff_path = './img/full_image.tif'
+        #     output_jpg_path = './img/full_image.jpg'
+        # else:
+        #     input_tiff_path = './img/cropped_image.tif'
+        #     output_jpg_path = './img/cropped_image.jpg'
         try:
             with WandImage(filename=input_tiff_path) as img:
                 img.format = 'jpeg'
                 img.save(filename=output_jpg_path)
             storage_client = storage.Client.from_service_account_json(self.SERVICE_ACCOUNT_FILE)
             bucket = storage_client.bucket("aiforevil")
-            blob = bucket.blob("full_image.jpg")
+            blob = bucket.blob(f"{file_name}.jpg")
             blob.upload_from_filename(output_jpg_path)
 
         except WandException as e:
@@ -120,12 +125,12 @@ class GoogleApi:
         return formatted_bbox
 
     def upload_to_gcp(self, local_path=None, gcp_file_name=None):
-        client=storage.Client.from_service_account_json("./backend/spatial-design-studio-401610-968f22789eb6.json")
+        client=storage.Client.from_service_account_json("./spatial-design-studio-401610-968f22789eb6.json")
         bucket = client.get_bucket("aiforevil")
         blob = bucket.blob(gcp_file_name)
         blob.download_to_filename(local_path)
         # blob = bucket.blob("cropped_image.tif")
-        # blob.download_to_filename("./backend/img/cropped_image.tif")
+        # blob.download_to_filename("./img/cropped_image.tif")
 
 
     def upload_ee_to_gcp(self, crop=False): 
@@ -152,12 +157,13 @@ class GoogleApi:
                 'fileFormat': 'GeoTIFF',  # Export format
             }
             task = ee.batch.Export.image.toCloudStorage(**export_params)
+
             task.start()
             while task.active():
                 print("Exporting... (task ID: {})".format(task.id))
                 time.sleep(60) 
             if task.status()['state'] == 'COMPLETED':
-                self.upload_to_gcp(local_path='./backend/img/cropped_image.tif', gcp_file_name='cropped_image.tif')
+                self.upload_to_gcp(local_path='./img/cropped_image.tif', gcp_file_name='cropped_image.tif')
                 print("Export completed. The image is in your Google Cloud Storage bucket.")
             else:
                 print("Export failed. Check the task status for more details.")
@@ -178,7 +184,7 @@ class GoogleApi:
                 print("Exporting... (task ID: {})".format(task.id))
                 time.sleep(60) 
             if task.status()['state'] == 'COMPLETED':
-                self.upload_to_gcp(local_path='./backend/img/full_image.tif', gcp_file_name='full_image.tif')
+                self.upload_to_gcp(local_path='./img/full_image.tif', gcp_file_name='full_image.tif')
                 print("Export completed. The image is in your Google Cloud Storage bucket and in local directory.")
             else:
                 print("Export failed. Check the task status for more details.")

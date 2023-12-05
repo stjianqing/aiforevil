@@ -23,12 +23,18 @@ export const InputCoordinates: React.FC = () => {
   });
 
   async function handleConfirm() {
+    var body = {x1: 0, y1: 0, x2: 0, y2: 0, date1: date}
+    body.x1 = croppedCoords.x1
+    body.y1 = croppedCoords.y1
+    body.x2 = croppedCoords.x2
+    body.y2 = croppedCoords.y2
+    body.date1 = date
     const req = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(croppedCoords)
+      body: JSON.stringify(body)
     });
 
     // TODO: instead of passing the cropData, pass the segemented image
