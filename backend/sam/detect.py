@@ -271,5 +271,5 @@ if __name__ == "__main__":
     edge_detector = EdgeDetector(sam_checkpoint, model_type)
     segment, multipolygon = edge_detector.run(img_path)
 
-    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
-    # edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
+    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
+    edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)

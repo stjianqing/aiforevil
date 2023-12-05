@@ -92,12 +92,6 @@ class GoogleApi:
         file_name = 'full_image' if full_image else 'cropped_image'
         input_tiff_path = f'./img/{file_name}.tif'
         output_jpg_path = f'./img/{file_name}.jpg'
-        # if full_image==True:
-        #     input_tiff_path = './img/full_image.tif'
-        #     output_jpg_path = './img/full_image.jpg'
-        # else:
-        #     input_tiff_path = './img/cropped_image.tif'
-        #     output_jpg_path = './img/cropped_image.jpg'
         try:
             with WandImage(filename=input_tiff_path) as img:
                 img.format = 'jpeg'
