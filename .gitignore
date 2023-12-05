@@ -1,2 +1,5 @@
 *.pth
 *.pyc
+
+/backend/img
+node_modules
