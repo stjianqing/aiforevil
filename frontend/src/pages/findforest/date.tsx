@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { FaCheck } from "react-icons/fa6";
 import { FaAngleLeft } from "react-icons/fa6";
@@ -113,8 +113,6 @@ export const FFDate: React.FC = () => {
         </div>
       </div>
 
-      <div className="h-full"></div>
-
       <div className="flex flex-row w-full justify-between mt-[1rem] mb-[3rem]">
         <button
           onClick={handleBack}
@@ -125,7 +123,7 @@ export const FFDate: React.FC = () => {
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
+          className="mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem] mb-[3rem]"
         >
           <p>Confirm</p>
           <FaCheck></FaCheck>

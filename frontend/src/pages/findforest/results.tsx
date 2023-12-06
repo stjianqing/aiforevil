@@ -1,20 +1,15 @@
-import React, { useState, createRef, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import html2pdf from "html2pdf.js";
 import { FaHome } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa6";
-import { get } from "http";
-
-const defaultSrc = "/small.jpg";
 
 export const FFDate: React.FC = () => {
   const router = useRouter();
   const [latitude, setLatitude] = useState(router.query.latitude);
   const [longitude, setLongitude] = useState(router.query.longitude);
   const [date, setDate] = useState(router.query.date);
-  const [image, setImage] = useState("");
-  const fileName: string = "report.pdf";
+  const [image, setImage] = useState('');
 
   async function getImg() {
     // const res = await fetch(`http://127.0.0.1:5000/api/get-segment`, {
@@ -40,35 +35,18 @@ export const FFDate: React.FC = () => {
     });
   }
 
-  const htmlContent = `
-    <div>
-      <h2 style="font-size: 2rem; text-align:center; font-family:system-ui; ">Satellite Image in ${date}</h2>
-      <p style="font-size: 1.5rem; text-align:center; font-familt: system-ui;">Location: ${latitude}, ${longitude}</p>
-      <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${image}" alt="Cropped image" width={500} height={500} justify: center></Image>
-    </div>`;
-
-  const DownloadPDFButton = ({}) => {
-    const containerRef = useRef(null);
+  const DownloadButton = ({ fileUrl }) => {
     const handleDownload = () => {
-      const element = containerRef.current;
-      const opt = {
-        margin: 10,
-        filename: "Report.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      };
-      html2pdf().set(opt).from(htmlContent).save();
+      const a = document.createElement('a');
+      a.href = fileUrl;
+      a.download = fileUrl.split('/').pop();
+      a.click();
     };
+  
     return (
-      <div>
-        <button
-          onClick={handleDownload}
-          className="mt-[1rem] border border-black rounded-xl p-2 px-[3rem]"
-        >
-          Download
-        </button>
-      </div>
+      <button className="mt-[1rem] border border-black rounded-xl p-2 px-[3rem]" onClick={handleDownload}>
+        Download
+      </button>
     );
   };
 
@@ -155,7 +133,7 @@ export const FFDate: React.FC = () => {
         </div>
 
         <div className="flex flex-col items-center">
-          <DownloadPDFButton />
+          <DownloadButton fileUrl={'https://storage.googleapis.com/aiforevil/output.shp.zip'}/>
         </div>
       </div>
 

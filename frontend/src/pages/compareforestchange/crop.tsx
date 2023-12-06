@@ -2,9 +2,6 @@ import React, { useState, createRef, useEffect } from "react";
 import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useRouter } from "next/router";
-import { get } from "http";
-
-const defaultSrc = "/small.jpg";
 
 export const InputCoordinates: React.FC = () => {
   const router = useRouter();
@@ -32,7 +29,31 @@ export const InputCoordinates: React.FC = () => {
     setImage(defaultSrc)
   }
 
-  function handleConfirm() {
+  async function handleConfirm() {
+    var body = {x1: 0, y1: 0, x2: 0, y2: 0, date: date1, compare: 0}
+    body.x1 = croppedCoords.x1
+    body.y1 = croppedCoords.y1
+    body.x2 = croppedCoords.x2
+    body.y2 = croppedCoords.y2
+    body.date = date1
+    const req1 = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    });
+
+    body.date = date2
+    body.compare = 1
+    const req2 = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    });
+
     router.push({
       pathname: "/compareforestchange/results",
       query: { latitude: latitude, longitude: longitude, date1: date1, date2: date2},
@@ -56,9 +77,6 @@ export const InputCoordinates: React.FC = () => {
     const x2 = croppedCoords.x2;
     const y1 = croppedCoords.y1;
     const y2 = croppedCoords.y2;
-
-    const x_dist_real = (x1 - x2) * 10000;
-    const y_dist_real = (y2 - y1) * 10000;
   }
 
   useEffect(() => {
@@ -185,7 +203,6 @@ export const InputCoordinates: React.FC = () => {
         Crop
       </button>
     </div>
-
 
       {cropped ? (
         <div className="h-full w-full fixed flex justify-center items-center">
