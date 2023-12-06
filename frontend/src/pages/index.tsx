@@ -229,6 +229,7 @@ export const Home: React.FC = () => {
           <div className="flex justify-center items-center h-fit sm:h-full  flex-col m-3">
             <button
               onClick={handleForestChange}
+              disabled
               className="border-4   flex justify-center items-center border-purple  w-[9rem] h-[9rem]  sm:w-[12rem]  sm:h-[12rem]  p-3 rounded-2xl "
             >
               <Image
