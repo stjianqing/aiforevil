@@ -205,11 +205,19 @@ class EdgeDetector():
 
         self.multipolygon = MultiPolygon(polygons)
 
-        with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
-            c.write({
-                'geometry': mapping(self.multipolygon),
-                'properties': {'id': 0, 'name':'segmented shape'},
-            })
+        try:
+            with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(self.multipolygon),
+                    'properties': {'id': 0, 'name':'segmented shape'},
+                })
+        except fiona.errors.DriverError:
+            os.remove('./img/output.shp.zip')
+            with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(self.multipolygon),
+                    'properties': {'id': 0, 'name':'segmented shape'},
+                })
 
     def _compare(self):
         """
@@ -237,15 +245,23 @@ class EdgeDetector():
         difference = self.multipolygon.difference(self.compare_shapefile)
         union = self.multipolygon.union(self.compare_shapefile)
 
-        with fiona.open('./img/comparison_output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
-            c.write({
-                'geometry': mapping(difference),
-                'properties': {'id': 0, 'name': 'difference'},
-            })
-            c.write({
-                'geometry': mapping(union),
-                'properties': {'id': 1, 'name': 'union'},
-            })
+        try:
+            with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(self.multipolygon),
+                    'properties': {'id': 0, 'name':'segmented shape'},
+                })
+        except fiona.errors.DriverError:
+            os.remove('./img/comparison_output.shp.zip')
+            with fiona.open('./img/comparison_output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(difference),
+                    'properties': {'id': 0, 'name': 'difference'},
+                })
+                c.write({
+                    'geometry': mapping(union),
+                    'properties': {'id': 1, 'name': 'union'},
+                })
 
     def run(self, img_path=None, compare_segment=None, compare_shapefile=None):
         self.img_path = img_path
