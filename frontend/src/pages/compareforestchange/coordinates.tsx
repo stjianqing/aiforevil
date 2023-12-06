@@ -1,14 +1,12 @@
-import React, { useState, createRef, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import SearchBoc from "@/components/searchbox";
 
 export const CFCoordinate: React.FC = () => {
   const [latitude, setLatitude] = useState();
   const [longitude, setLongitude] = useState();
-  const [token, setToken] = useState("");
   const router = useRouter();
-  const [cropData, setCropData] = useState(router.query.cropData);
-  
+
   function handleLatitudeChange(e) {
     setLatitude(e.target.value);
   }

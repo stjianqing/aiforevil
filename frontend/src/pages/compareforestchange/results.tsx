@@ -1,7 +1,6 @@
-import React, { useState, createRef, useEffect, useRef} from "react";
+import React, { useState, useEffect} from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import html2pdf from 'html2pdf.js';
 
 export const FCResults: React.FC = () => {
   const router = useRouter();
@@ -11,10 +10,6 @@ export const FCResults: React.FC = () => {
   const [date2, setDate2] = useState(router.query.date2);
   const [image, setImage] = useState('');
 
-  const fileName: string = "report.pdf"
-  const [isVisible, setIsVisible] = useState(false);
-
-
   async function getImg(){
     const res = await fetch(`http://127.0.0.1:5000/api/get-difference`,{
       method: 'GET',
@@ -22,6 +17,7 @@ export const FCResults: React.FC = () => {
       .then(res => res.json())
       .then(data => {setImage(data.url)})
   }
+
   function handleBack() {
     router.push({
         pathname: "/compareforestchange/crop",
@@ -34,38 +30,19 @@ export const FCResults: React.FC = () => {
         pathname: "/"
       })
   };
-
-  const htmlContent = `
-    <div>
-      <h2 style="font-size: 2rem; text-align:center; font-family:system-ui; ">Satellite Image in ${date1} and ${date2}</h2>
-      <p style="font-size: 1.5rem; text-align:center; font-familt: system-ui;">Location: ${latitude}, ${longitude}</p>
-      <Image style="display: block; margin-left: auto;margin-right: auto; width: 70%; alignment:center; margin-top: 1.5rem" src="${image}" alt="Cropped image" width={500} height={500} justify: center></Image>
-    </div>`;
-
-  const DownloadPDFButton = ({}) => {
-    const containerRef = useRef(null);
+  const DownloadButton = ({ fileUrl }) => {
     const handleDownload = () => {
-      console.log("start download")
-      const element = containerRef.current;
-      const opt =  {
-        margin: 10,
-        filename: "Report.pdf",
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      }
-      console.log("legit starting...")
-      html2pdf().set(opt).from(htmlContent).save();
+      const a = document.createElement('a');
+      a.href = fileUrl;
+      a.download = fileUrl.split('/').pop();
+      a.click();
     };
+  
     return (
-      <div>
-        <button 
-          onClick={handleDownload}
-          className="mt-[1rem] border border-black rounded-xl p-2 px-[3rem]">
-            Download
-          </button>
-      </div>
-    )
+      <button className="mt-[1rem] border border-black rounded-xl p-2 px-[3rem]" onClick={handleDownload}>
+        Download
+      </button>
+    );
   };
 
   useEffect(() => {
@@ -118,7 +95,7 @@ export const FCResults: React.FC = () => {
           </div>
 
           <div>
-            <DownloadPDFButton />
+            <DownloadButton fileUrl={'https://storage.googleapis.com/aiforevil/output.shp.zip'}/>
           </div>
       </div>
 
@@ -136,8 +113,6 @@ export const FCResults: React.FC = () => {
           Home
         </button>
       </div>
-
-    
     </div>
   );
 };
