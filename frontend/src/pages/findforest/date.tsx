@@ -1,4 +1,4 @@
-import React, { useState, createRef, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 
 export const FFDate: React.FC = () => {
