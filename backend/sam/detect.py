@@ -12,7 +12,7 @@ Input:
     segment: whether to get the segmentated image (default: True)
 
 Output:
-    overlay.png: the overlay of the segmentated image on the original image
+    overlay.jpg: the overlay of the segmentated image on the original image
     output.shp.zip: the shapefile of the segmentated image if it is a TIF file
 '''
 import numpy as np
@@ -140,7 +140,7 @@ class EdgeDetector():
         8. Draw filled contours on the alpha channel.
         9. Convert the original image to RGBA format.
         10. Iterate over each pixel in the alpha channel and set the corresponding pixel in the image to blue.
-        11. Save the image as "overlay.png".
+        11. Save the image as "overlay.jpg".
         12. If it is a TIF file, generate a shapefile with the coordinates.
         """
         masks, _, _ = self.predictor.predict(
@@ -165,7 +165,7 @@ class EdgeDetector():
 
         image = self.overlay(segmentation)
 
-        cv2.imwrite(f"../img/overlay.png", image)
+        cv2.imwrite(f"./img/overlay.jpg", image)
 
         if self.TIF:
             self._generate_shapefile(alpha, contours)
@@ -205,11 +205,19 @@ class EdgeDetector():
 
         self.multipolygon = MultiPolygon(polygons)
 
-        with fiona.open('../img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
-            c.write({
-                'geometry': mapping(self.multipolygon),
-                'properties': {'id': 0, 'name':'segmented shape'},
-            })
+        try:
+            with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(self.multipolygon),
+                    'properties': {'id': 0, 'name':'segmented shape'},
+                })
+        except fiona.errors.DriverError:
+            os.remove('./img/output.shp.zip')
+            with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(self.multipolygon),
+                    'properties': {'id': 0, 'name':'segmented shape'},
+                })
 
     def _compare(self):
         """
@@ -232,20 +240,28 @@ class EdgeDetector():
 
         image = self.overlay(segment)
 
-        cv2.imwrite(f"../img/overlay_comparison.png", image)
+        cv2.imwrite(f"./img/overlay_comparison.jpg", image)
 
         difference = self.multipolygon.difference(self.compare_shapefile)
         union = self.multipolygon.union(self.compare_shapefile)
 
-        with fiona.open('../img/comparison_output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
-            c.write({
-                'geometry': mapping(difference),
-                'properties': {'id': 0, 'name': 'difference'},
-            })
-            c.write({
-                'geometry': mapping(union),
-                'properties': {'id': 1, 'name': 'union'},
-            })
+        try:
+            with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(self.multipolygon),
+                    'properties': {'id': 0, 'name':'segmented shape'},
+                })
+        except fiona.errors.DriverError:
+            os.remove('./img/comparison_output.shp.zip')
+            with fiona.open('./img/comparison_output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+                c.write({
+                    'geometry': mapping(difference),
+                    'properties': {'id': 0, 'name': 'difference'},
+                })
+                c.write({
+                    'geometry': mapping(union),
+                    'properties': {'id': 1, 'name': 'union'},
+                })
 
     def run(self, img_path=None, compare_segment=None, compare_shapefile=None):
         self.img_path = img_path
@@ -264,12 +280,12 @@ class EdgeDetector():
         return self.alpha, self.multipolygon
 
 if __name__ == "__main__":
-    sam_checkpoint = "./model/sam_vit_l_0b3195.pth"
+    sam_checkpoint = "./sam/model/sam_vit_l_0b3195.pth"
     model_type = "vit_l"
     # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
-    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (16).tif" # cuc phuong
+    img_path = "C:/Users/ruiya/Desktop/aiforevil/backend/img/cropped_image.tif" # cuc phuong
     edge_detector = EdgeDetector(sam_checkpoint, model_type)
     segment, multipolygon = edge_detector.run(img_path)
 
-    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
-    edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
+    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
+    # edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
