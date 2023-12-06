@@ -3,7 +3,6 @@ from flask_cors import CORS
 from earthengineapi import GoogleApi
 from datetime import datetime, timedelta
 from sam.detect import *
-import math
 
 app = Flask(__name__)
 CORS(app)
@@ -46,9 +45,11 @@ def send_location_coordinates():
     end_date = datetime.strptime(date, '%Y-%m-%d')
     start_date = end_date - timedelta(days=3 * 30)
     lat_long = (float(lat), float(long))
+
     g = GoogleApi(start_date, end_date, lat_long)
     g.upload_ee_to_gcp()  #defaults to full image
     g.tiff_to_jpg() 
+
     res = {'latitude': lat, 'longitude': long, 'start_date': start_date, 'end_date': end_date}
     print(res)
     return jsonify(res)
@@ -60,20 +61,16 @@ def get_image():
 
 @app.route("/api/cropped-coord", methods=['POST'])
 def send_cropped_coordinates():
-    res = {'x1': 0.0, 'x2': 0.0, 'y1': 0.0, 'y2': 0.0}
+    # res = {'x1': 0.0, 'x2': 0.0, 'y1': 0.0, 'y2': 0.0}
     x1 = request.json.get('x1') # right-most
     x2 = request.json.get('x2') # left-most
     y1 = request.json.get('y1') # bottom-most
     y2 = request.json.get('y2') # top-most
 
-    date1 = request.json.get('date1')
-    date2 = request.json.get('date2')
-    if date2 is None:
-        end_date = datetime.strptime(date1, '%Y-%m-%d')
-        start_date = end_date - timedelta(days=3 * 30)
-    else:
-        start_date = date1
-        end_date = date2
+    date = request.json.get('date')
+    compare = request.json.get('compare')
+    end_date = datetime.strptime(date, '%Y-%m-%d')
+    start_date = end_date - timedelta(days=3 * 30)
 
     long1, lat2, long2, lat1 = _process(x1, y1, x2, y2)
 
@@ -81,13 +78,14 @@ def send_cropped_coordinates():
     latlong = (long2, lat2, long1, lat1)
 
     g = GoogleApi(start_date, end_date, latlong)
-    g.upload_ee_to_gcp(crop=True)
+    g.upload_ee_to_gcp(crop=True, compare=compare)
     print(res)
     return jsonify(res)
 
 @app.route('/api/get-segment', methods=['GET'])
 def get_segment():
     model.run('./img/cropped_image.tif')
+
     g=GoogleApi()
     g.upload_to_gcp(local_path='./img/output.shp.zip', gcp_file_name='output.shp.zip')
     g.upload_to_gcp(local_path='./img/overlay.jpg', gcp_file_name='overlay.jpg')
@@ -97,7 +95,8 @@ def get_segment():
 @app.route('/api/get-difference', methods=['GET'])
 def get_difference():
     segment, multipolygon = model.run('./img/cropped_image.tif')
-    model.run('./img/cropped_image.tif', segment, multipolygon)
+    model.run('./img/cropped_image_compare.tif', segment, multipolygon)
+
     g = GoogleApi()
     g.upload_to_gcp(local_path='./img/comparison_output.shp.zip', gcp_file_name='output.shp.zip')
     g.upload_to_gcp(local_path='./img/overlay_comparison.jpg', gcp_file_name='overlay.jpg')

@@ -283,9 +283,9 @@ if __name__ == "__main__":
     sam_checkpoint = "./sam/model/sam_vit_l_0b3195.pth"
     model_type = "vit_l"
     # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
-    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (16).tif" # cuc phuong
+    img_path = "C:/Users/ruiya/Desktop/aiforevil/backend/img/cropped_image.tif" # cuc phuong
     edge_detector = EdgeDetector(sam_checkpoint, model_type)
     segment, multipolygon = edge_detector.run(img_path)
 
-    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
-    edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
+    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
+    # edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)

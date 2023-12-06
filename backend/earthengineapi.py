@@ -122,12 +122,15 @@ class GoogleApi:
         client=storage.Client.from_service_account_json("./spatial-design-studio-401610-968f22789eb6.json")
         bucket = client.get_bucket("aiforevil")
         blob = bucket.blob(gcp_file_name)
+        blob.upload_from_filename(local_path)
+
+    def download_from_gcp(self, local_path=None, gcp_file_name=None):
+        client=storage.Client.from_service_account_json("./spatial-design-studio-401610-968f22789eb6.json")
+        bucket = client.get_bucket("aiforevil")
+        blob = bucket.blob(gcp_file_name)
         blob.download_to_filename(local_path)
-        # blob = bucket.blob("cropped_image.tif")
-        # blob.download_to_filename("./img/cropped_image.tif")
 
-
-    def upload_ee_to_gcp(self, crop=False): 
+    def upload_ee_to_gcp(self, crop=False, compare=False): 
         bucket_name = "aiforevil"
         self.s2_sr_cld_col = self.get_s2_sr_cld_col()
         self.trueColorVis = {
@@ -141,10 +144,11 @@ class GoogleApi:
                              ._apply_visualization(self.trueColorVis)
                              )[0]
 
-        if crop==True:
+        if crop:
+            file_name = 'cropped_image_compare' if compare else 'cropped_image'
             export_params = {
                 'image': self.image,
-                'description': 'cropped_image',  # Export name
+                'description': file_name,  # Export name
                 'bucket': bucket_name,  # Google Cloud Storage bucket name 
                 'scale': 10,  # Resolution in meters per pixel
                 'region': self.AOI,  # Convert the region geometry to coordinates
@@ -157,7 +161,7 @@ class GoogleApi:
                 print("Exporting... (task ID: {})".format(task.id))
                 time.sleep(60) 
             if task.status()['state'] == 'COMPLETED':
-                self.upload_to_gcp(local_path='./img/cropped_image.tif', gcp_file_name='cropped_image.tif')
+                self.download_from_gcp(local_path=f'./img/{file_name}.tif', gcp_file_name=f'{file_name}.tif')
                 print("Export completed. The image is in your Google Cloud Storage bucket.")
             else:
                 print("Export failed. Check the task status for more details.")
@@ -178,7 +182,7 @@ class GoogleApi:
                 print("Exporting... (task ID: {})".format(task.id))
                 time.sleep(60) 
             if task.status()['state'] == 'COMPLETED':
-                self.upload_to_gcp(local_path='./img/full_image.tif', gcp_file_name='full_image.tif')
+                self.download_from_gcp(local_path='./img/full_image.tif', gcp_file_name='full_image.tif')
                 print("Export completed. The image is in your Google Cloud Storage bucket and in local directory.")
             else:
                 print("Export failed. Check the task status for more details.")
