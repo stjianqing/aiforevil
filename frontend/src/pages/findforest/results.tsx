@@ -24,6 +24,7 @@ export const FFDate: React.FC = () => {
     //   .then((data) => {
     //     setImage(data.url);
     //   });
+    setImage(defaultSrc)
   }
 
   function handleBack() {

@@ -29,6 +29,7 @@ export const InputCoordinates: React.FC = () => {
     // })
     //   .then(res => res.json())
     //   .then(data => {setImage(data.url)})
+    setImage(defaultSrc)
   }
 
   function handleConfirm() {
@@ -103,7 +104,7 @@ export const InputCoordinates: React.FC = () => {
         "cropbox width"
       );
       console.log(cropperRef.current?.cropper.getCropBoxData(), "cropbox data");
-      // setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
     }
     setCropped(true);
   };

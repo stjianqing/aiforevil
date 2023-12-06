@@ -74,6 +74,7 @@ export const InputCoordinates: React.FC = () => {
     //   .then((data) => {
     //     setImage(data.url);
     //   });
+    setImage(defaultSrc)
   }
 
   useEffect(() => {

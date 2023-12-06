@@ -2,6 +2,7 @@ import React, { useState, createRef, useEffect, useRef} from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import html2pdf from 'html2pdf.js';
+const defaultSrc = "/small.jpg";
 
 export const FCResults: React.FC = () => {
   const router = useRouter();
@@ -21,6 +22,7 @@ export const FCResults: React.FC = () => {
     // })
     //   .then(res => res.json())
     //   .then(data => {setImage(data.url)})
+    setImage(defaultSrc)
   }
   function handleBack() {
     router.push({

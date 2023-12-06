@@ -10,7 +10,7 @@ export default function SearchBoc({ updateCoordinates }) {
   mapboxgl.accessToken =
     "pk.eyJ1IjoieWVva2V3ZWkiLCJhIjoiY2xlcG5wZ3ZmMGUweTNxdGt4ZG1ldGhsYyJ9.HHNGnKUPolWAo5_UYwzCZg";
   const mapContainer = useRef(null);
-  const map = useRef(null);
+  const mapSeen = useRef(null);
   const [lng, setLng] = useState(-70.9);
   const [lat, setLat] = useState(42.35);
   const [zoom, setZoom] = useState(9);
@@ -22,15 +22,15 @@ export default function SearchBoc({ updateCoordinates }) {
     setLat(selectLat);
     setLng(selectLon);
     updateCoordinates(selectLat, selectLon);
-    map.current.flyTo({
+    mapSeen.current.flyTo({
       center: [lng, lat],
       zoom: zoom,
     });
   }
 
   useEffect(() => {
-    if (map.current) return; // initialize map only once
-    map.current = new mapboxgl.Map({
+    if (mapSeen.current) return; // initialize map only once
+    mapSeen.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v12",
       center: [lng, lat],
