@@ -24,11 +24,11 @@ export const InputCoordinates: React.FC = () => {
   });
 
   async function getImg(){
-    const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(data => {setImage(data.url)})
+    // const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
+    //   method: 'GET',
+    // })
+    //   .then(res => res.json())
+    //   .then(data => {setImage(data.url)})
   }
 
   function handleConfirm() {
@@ -103,7 +103,7 @@ export const InputCoordinates: React.FC = () => {
         "cropbox width"
       );
       console.log(cropperRef.current?.cropper.getCropBoxData(), "cropbox data");
-      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+      // setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
     }
     setCropped(true);
   };

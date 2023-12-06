@@ -10,13 +10,13 @@ export const FFDate: React.FC = () => {
   const [date, setDate] = useState("");
 
   async function handleConfirm() {
-    const req = await fetch("http://127.0.0.1:5000/api/location-coord", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ latitude, longitude, date }),
-    });
+    // const req = await fetch("http://127.0.0.1:5000/api/location-coord", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ latitude, longitude, date }),
+    // });
 
     router.push({
       pathname: "/findforest/crop",

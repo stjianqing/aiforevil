@@ -17,13 +17,13 @@ export const FFDate: React.FC = () => {
   const fileName: string = "report.pdf";
 
   async function getImg() {
-    const res = await fetch(`http://127.0.0.1:5000/api/get-segment`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setImage(data.url);
-      });
+    // const res = await fetch(`http://127.0.0.1:5000/api/get-segment`, {
+    //   method: "GET",
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setImage(data.url);
+    //   });
   }
 
   function handleBack() {
