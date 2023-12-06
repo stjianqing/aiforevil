@@ -4,8 +4,6 @@ import Image from "next/image";
 import { FaHome } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa6";
 
-const defaultSrc = "/small.jpg";
-
 export const FFDate: React.FC = () => {
   const router = useRouter();
   const [latitude, setLatitude] = useState(router.query.latitude);
