@@ -7,6 +7,7 @@ import FF from "public/findforest.svg";
 import FC from "public/compare.svg";
 import TS from "public/series.svg";
 import FF_gif from "public/findForest.gif";
+import FC_gif from "public/compare.gif";
 
 export const Home: React.FC = () => {
   const router = useRouter();
@@ -113,7 +114,7 @@ export const Home: React.FC = () => {
                 </p>
                 <div className="flex flex-row w-full justify-center">
                   <Image
-                    src={FF_gif}
+                    src={FC_gif}
                     alt="find forest"
                     width={20}
                     height={20}
