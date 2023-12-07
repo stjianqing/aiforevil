@@ -4,6 +4,8 @@ import Image from "next/image";
 import { FaHome } from "react-icons/fa";
 import { FaAngleLeft } from "react-icons/fa6";
 
+const segmentedSrc = "/segmented.jpg"
+
 export const FFDate: React.FC = () => {
   const router = useRouter();
   const [latitude, setLatitude] = useState(router.query.latitude);
@@ -19,7 +21,7 @@ export const FFDate: React.FC = () => {
     //   .then((data) => {
     //     setImage(data.url);
     //   });
-    setImage(defaultSrc)
+    setImage(segmentedSrc)
   }
 
   function handleBack() {

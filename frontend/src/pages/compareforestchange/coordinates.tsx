@@ -37,7 +37,7 @@ export const CFCoordinate: React.FC = () => {
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
-      <h1 className="text-black sm:text-5xl text-2xl justify-center items-center flex font-semibold p-3  mx-[1rem] sm:mx-[3rem]">
+      <h1 className="text-black sm:text-5xl text-2xl justify-center items-center flex font-semibold p-3 mx-[1rem] sm:mx-[3rem]">
         Forest Change
       </h1>
       <div className="flex flex-row w-full justify-center items-center">
@@ -81,7 +81,7 @@ export const CFCoordinate: React.FC = () => {
         </svg>
       </div>
 
-      <p className="flex flex-row justify-center m-[1rem] sm:text-2xl">
+      <p className="flex flex-row justify-center mx-[1rem] sm:text-2xl">
         Search for your forest or enter coordinates manually
       </p>
       <div className="flex flex-row w-5/6 flex-wrap justify-between p-[1rem]">
@@ -126,7 +126,7 @@ export const CFCoordinate: React.FC = () => {
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem] mb-[3rem]"
+          className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
         >
           Confirm <FaCheck></FaCheck>
         </button>

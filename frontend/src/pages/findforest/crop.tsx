@@ -9,6 +9,7 @@ import {
   FaCropSimple,
   FaArrowRotateRight,
 } from "react-icons/fa6";
+const defaultSrc = "/small.jpg";
 
 export const InputCoordinates: React.FC = () => {
   const router = useRouter();
@@ -120,7 +121,7 @@ export const InputCoordinates: React.FC = () => {
         "cropbox width"
       );
       console.log(cropperRef.current?.cropper.getCropBoxData(), "cropbox data");
-      // setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
     }
     setCropped(true);
   };

@@ -2,7 +2,7 @@ import React, { useState, useEffect} from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import html2pdf from 'html2pdf.js';
-const defaultSrc = "/small.jpg";
+const defaultSrc = "/compare.jpg";
 
 export const FCResults: React.FC = () => {
   const router = useRouter();
