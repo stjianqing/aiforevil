@@ -25,6 +25,7 @@ export const CFCoordinate: React.FC = () => {
 
   const DynamicSearchBox = dynamic(() => import("@/components/searchbox"), {
     loading: () => <p>Loading...</p>,
+    ssr: false,
   });
   function handleConfirm() {
     router.push({

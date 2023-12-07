@@ -38,6 +38,7 @@ export const FFCoordinate: React.FC = () => {
 
   const DynamicSearchBox = dynamic(() => import("@/components/searchbox"), {
     loading: () => <p>Loading...</p>,
+    ssr: false,
   });
 
   return (
