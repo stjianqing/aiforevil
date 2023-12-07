@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import SearchBoc from "@/components/searchbox";
 import { FaCheck } from "react-icons/fa6";
 import { FaAngleLeft } from "react-icons/fa6";
+import dynamic from "next/dynamic";
 
 export const CFCoordinate: React.FC = () => {
   const [latitude, setLatitude] = useState();
@@ -22,6 +23,10 @@ export const CFCoordinate: React.FC = () => {
     console.log(latitude, longitude);
   };
 
+  const DynamicSearchBox = dynamic(() => import("@/components/searchbox"), {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  });
   function handleConfirm() {
     router.push({
       pathname: "/compareforestchange/date",
@@ -34,6 +39,8 @@ export const CFCoordinate: React.FC = () => {
       pathname: "/",
     });
   }
+  // if (typeof document !== "undefined") {
+  // you are safe to use the "document" object here
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
@@ -86,7 +93,8 @@ export const CFCoordinate: React.FC = () => {
       </p>
       <div className="flex flex-row w-5/6 flex-wrap justify-between p-[1rem]">
         <div className="flex flex-col px-[2rem] mx-[2rem]">
-          <SearchBoc updateCoordinates={updateCoordinates} />
+          {/* <SearchBoc updateCoordinates={updateCoordinates} /> */}
+          <DynamicSearchBox updateCoordinates={updateCoordinates} />
         </div>
         <div className="flex justify-center flex-col px-[1rem] pt-[2rem]">
           <div className="flex flex-row">
@@ -134,5 +142,6 @@ export const CFCoordinate: React.FC = () => {
     </div>
   );
 };
+// };
 
 export default CFCoordinate;
