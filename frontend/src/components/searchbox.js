@@ -174,13 +174,13 @@ export default function SearchBox({ updateCoordinates }) {
           value=""
           onRetrieve={handleSelectLocation}
           accessToken="pk.eyJ1IjoidmFsdWRvbGxhciIsImEiOiJjbG95NTd1dmcwMTR0MmtuOW5mbGZjYXBlIn0.sKTGeqZyqi8BRP2O_0A8Xg"
-          className="w-[18rem] sm:w-full "
+          className="w-[16rem] sm:w-full "
         />
       </form>
       <div>
         <div
           ref={mapContainer}
-          className="sm:w-[30rem] sm:h-[20rem] text-xs w-[18rem] h-[18rem]"
+          className="sm:w-[30rem] sm:h-[20rem] text-[0.5rem] w-[16rem] h-[16rem]"
         />
       </div>
     </>

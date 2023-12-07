@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
 import { useState, ReactNode } from "react";
-
+import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTree } from "@fortawesome/free-solid-svg-icons";
+import logo from "public/logo.svg";
 
 export const Header: React.FC = () => {
   const router = useRouter();
@@ -10,10 +11,18 @@ export const Header: React.FC = () => {
     router.push("/");
   }
   return (
-    <div className="w-screen h-[3rem] flex absolute bg-transparent sm:opacity-100 opacity-0">
-      <div className="w-fit h-[3rem] flex text-xl text-black mx-10 content-center">
-        <button onClick={handleHome}>ForestFind</button>
-        {/* <FontAwesomeIcon className="h-[3rem] mt-3 mx-3" icon={faTree} /> */}
+    <div className="w-screen h-[3rem] flex absolute bg-white">
+      <div className="w-fit h-[3rem] flex text-xl text-black sm:mx-10 mx-0 items-center justify-center">
+        <button onClick={handleHome} className=" hidden sm:flex">
+          ForestFind
+        </button>
+        <Image
+          onClick={handleHome}
+          src={logo}
+          width={20}
+          height={20}
+          className="mx-2"
+        ></Image>
       </div>
     </div>
   );
