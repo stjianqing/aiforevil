@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import SearchBoc from "@/components/searchbox";
 import { FaCheck } from "react-icons/fa6";
 import { FaAngleLeft } from "react-icons/fa6";
+import dynamic from "next/dynamic";
 
 export const FFCoordinate: React.FC = () => {
   const [latitude, setLatitude] = useState();
@@ -34,6 +35,10 @@ export const FFCoordinate: React.FC = () => {
       pathname: "/",
     });
   }
+
+  const DynamicSearchBox = dynamic(() => import("@/components/searchbox"), {
+    loading: () => <p>Loading...</p>,
+  });
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] overflow-scroll ">
@@ -86,7 +91,8 @@ export const FFCoordinate: React.FC = () => {
       </p>
       <div className="flex flex-row w-5/6 flex-wrap justify-between px-[1rem] ">
         <div className="flex flex-col px-[2rem]">
-          <SearchBoc updateCoordinates={updateCoordinates} />
+          {/* <SearchBoc updateCoordinates={updateCoordinates} /> */}
+          <DynamicSearchBox updateCoordinates={updateCoordinates} />
         </div>
         <div className="flex justify-center flex-col px-[1rem] pt-[1rem]">
           <div className="flex flex-row">
