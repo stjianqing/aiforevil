@@ -95,14 +95,14 @@ def get_segment():
 
 @app.route('/api/get-difference', methods=['GET'])
 def get_difference():
-    segment, multipolygon = model.run('./img/cropped_image.tif')
-    model.run('./img/cropped_image_compare.tif', segment, multipolygon)
+    segment, multipolygon, _ = model.run('./img/cropped_image.tif')
+    _, _, area_different_percentage = model.run('./img/cropped_image_compare.tif', segment, multipolygon)
 
     g = GoogleApi()
     g.upload_to_gcp(local_path='./img/comparison_output.shp.zip', gcp_file_name='output.shp.zip')
     g.upload_to_gcp(local_path='./img/overlay_comparison.jpg', gcp_file_name='overlay.jpg')
 
-    responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/overlay.jpg'})
+    responses = jsonify({'url': 'https://storage.googleapis.com/aiforevil/overlay.jpg', 'area_different_percentage': area_different_percentage})
     return responses
 
 if __name__ == '__main__':
