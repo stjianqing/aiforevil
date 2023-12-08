@@ -101,6 +101,8 @@ export const FCResults: React.FC = () => {
 
           <div>
             <DownloadButton fileUrl={'https://storage.googleapis.com/aiforevil/output.shp.zip'}/>
+            <p className = "text-xl text-black p-[1rem] mt-[3rem] font-bold">% Change: 0 </p>
+  
           </div>
       </div>
 

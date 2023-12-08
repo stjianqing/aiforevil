@@ -136,8 +136,6 @@ export const FFDate: React.FC = () => {
 
         <div className="flex flex-col items-center">
           <DownloadButton fileUrl={'https://storage.googleapis.com/aiforevil/output.shp.zip'}/>
-          <p className = "text-xl text-black p-[1rem] mt-[3rem] font-bold">% Change: 0 </p>
-  
         </div>
       </div>
 
