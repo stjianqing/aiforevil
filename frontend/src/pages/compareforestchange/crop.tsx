@@ -3,7 +3,12 @@ import Cropper, { ReactCropperElement } from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-
+import {
+  FaCheck,
+  FaAngleLeft,
+  FaCropSimple,
+  FaArrowRotateRight,
+} from "react-icons/fa6";
 const defaultSrc = "/small.jpg";
 
 export const InputCoordinates: React.FC = () => {
@@ -142,7 +147,7 @@ export const InputCoordinates: React.FC = () => {
         {cropped ? (
           <div className="w-screen h-screen bg-black opacity-70 fixed"></div>
         ) : null}
-        <div className="flex w-screen h-screen flex-col pt-[2rem] ">
+          <div className="flex w-screen h-screen flex-col pt-[2rem] ">
           <h1 className="text-black sm:text-5xl text-2xl justify-center flex font-semibold p-3 mx-[3rem]">
             Forest Change
           </h1>
@@ -186,100 +191,115 @@ export const InputCoordinates: React.FC = () => {
               <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
             </svg>
           </div>
-        <div>
-          <div className="flex p-1 flex-wrap justify-around w-full">
-            <div className="flex items-start">
-              <div className="flex flex-col">
-                <p className="flex flex-row font-semibold text-md sm:text-lg">
-                  Latitude:{" "}
-                </p>
-                <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
-                  Longtitude:
-                </p>
-                <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
-                  Date 1:
-                </p>
-                <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
-                  Date 2:
-                </p>
+          <div>
+            <div className="flex p-1 flex-wrap justify-around w-full">
+              <div className="flex items-start">
+                <div className="flex flex-col">
+                  <p className="flex flex-row font-semibold text-md sm:text-lg">
+                    Latitude:
+                  </p>
+                  <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
+                    Longtitude:
+                  </p>
+                  <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
+                    Date 1:
+                  </p>
+                  <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
+                    Date 2:
+                  </p>
+                </div>
+                <div className="flex flex-col w-fit ml-[1rem]">
+                  <p className="flex flex-row w-fit text-md sm:text-lg">
+                    {latitude}
+                  </p>
+                  <p className="flex flex-row w-fit text-md sm:text-lg">
+                    {longitude}
+                  </p>
+                  <p className="flex flex-row w-fit text-md sm:text-lg">
+                    {date1}
+                  </p>
+                  <p className="flex flex-row w-fit text-md sm:text-lg">
+                    {date2}
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col w-fit ml-[1rem]">
-                <p className="flex flex-row w-fit text-md sm:text-lg"> {latitude}</p>
-                <p className="flex flex-row w-fit text-md sm:text-lg"> {longitude}</p>
-                <p className="flex flex-row w-fit text-md sm:text-lg"> {date1}</p>
-                <p className="flex flex-row w-fit text-md sm:text-lg"> {date2}</p>
+              <div className="flex flex-col mx-[1rem] items-center">
+                <p className="text-lg sm:text-2xl text-black p-[1rem] ">
+                  Crop to your area of interest
+                </p>
+                <div className="flex flex-row  ">
+                  <Cropper
+                    ref={cropperRef}
+                    className=" w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] mx-5"
+                    zoomable={false}
+                    initialAspectRatio={1}
+                    preview=".img-preview"
+                    src={image}
+                    viewMode={1}
+                    minCropBoxHeight={2}
+                    minCropBoxWidth={2}
+                    background={false}
+                    responsive={true}
+                    autoCropArea={0.5}
+                    checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
+                    guides={true}
+                  />
+                </div>
               </div>
+              {/* <div className="flex flex-col w-[8rem]"></div> */}
             </div>
-            <div className="flex flex-col mx-[1rem] items-center">
-              <p className="text-xl sm:text-2xl text-black p-[1rem] ">
-                Crop to your area of interest
-              </p>
-              <div className="flex flex-row  ">
-                <Cropper
-                  ref={cropperRef}
-                  className="w-[400px] h-[400px] mx-5"
-                  zoomable={false}
-                  initialAspectRatio={1}
-                  preview=".img-preview"
-                  src={image}
-                  viewMode={1}
-                  minCropBoxHeight={2}
-                  minCropBoxWidth={2}
-                  background={false}
-                  responsive={true}
-                  autoCropArea={0.5}
-                  checkOrientation={false} // https://github.com/fengyuanchen/cropperjs/issues/671
-                  guides={true}
+          </div>
+
+          <div className="flex flex-row w-full justify-between mb-[2rem] mt-[1rem]">
+            <button
+              onClick={handleBack}
+              className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[2rem] mb-[2rem]"
+          >
+              <FaAngleLeft></FaAngleLeft>
+              <p>Back</p>
+            </button>
+
+            <button
+              onClick={getCropData}
+              className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[2rem] mb-[2rem]"
+        >
+              <p>Crop</p>
+              <FaCropSimple></FaCropSimple>
+            </button>
+          </div>
+
+          {cropped ? (
+            <div className="h-full w-screen fixed flex justify-center items-center">
+              <div className=" fixed bg-white flex justify-center items-center flex-col px-[2rem] mb-[2rem] mx-[1rem]">
+                <h3 className="text-lg sm:text-xl pt-[2rem]">
+                  Area of Interest
+                </h3>
+                <img
+                  className="w-[18rem] h-[18rem] sm:w-[25rem] sm:h-[25rem] object-contain m-5"
+                  src={cropData}
+                  alt="cropped"
                 />
+
+                <div className="flex flex-row justify-between mb-[2rem]">
+                  <button
+                    onClick={toggleModal}
+                    className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-pink rounded-xl px-[1rem] p-1 sm:p-2 mr-[3rem] sm:mr-[1rem] mb-[2rem]"
+          >
+                    <p>Redo</p>
+                    <FaArrowRotateRight className="rotate-90"></FaArrowRotateRight>
+                  </button>
+                  <button
+                    onClick={handleConfirm}
+                    className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 ml-[3rem] sm:m1-[1rem] mb-[2rem]"
+        >
+                    <p> Confirm</p>
+                    <FaCheck></FaCheck>
+                  </button>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col w-[6rem] "></div>
-          </div>
+          ) : null}
         </div>
-
-        <div className="flex flex-row w-full justify-between mb-[2rem] mt-[1rem]">
-          <button
-            onClick={handleBack}
-            className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[3rem]"
-        >
-            Back
-          </button>
-          <button
-            onClick={getCropData}
-            className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[3rem]"
-        >
-            Crop
-          </button>
-        </div>
-
-        {cropped ? (
-          <div className="h-full w-full fixed flex justify-center items-center">
-            <div className="w-full bg-black opacity-70 h-full fixed"></div>
-            <div className=" fixed bg-white flex justify-center items-center flex-col px-[2rem] mb-[2rem] mx-[1rem]">
-              <h3 className="text-xl pt-[2rem]"> Area of Interest</h3>
-              <img
-                className="w-[25rem] h-[25rem] object-contain m-5"
-                src={cropData}
-                alt="cropped"
-              />
-              <div className="flex flex-row justify-between mb-[1rem]">
-                <button
-                  onClick={toggleModal}
-                  className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-pink rounded-xl px-[1rem] p-1 sm:p-2 mr-[3rem]"
-        >
-                  Redo
-                </button>
-                <button
-                  onClick={handleConfirm}
-                  className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 ml-[3rem]"
-        >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : null}
-      </div>
       </>
     );
   }

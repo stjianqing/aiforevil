@@ -203,13 +203,13 @@ export const InputCoordinates: React.FC = () => {
                 </div>
               </div>
               <div className="flex flex-col mx-[1rem] items-center">
-                <p className="text-lg sm:text-2xl text-black p-[1rem] ">
+              <p className="text-lg sm:text-2xl text-black p-[1rem] ">
                   Crop to your area of interest
                 </p>
                 <div className="flex flex-row  ">
                   <Cropper
                     ref={cropperRef}
-                    className=" w-[350px] h-[350px] sm:w-[400px] sm:h-[400px] mx-5"
+                    className=" w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] mx-5"
                     zoomable={false}
                     initialAspectRatio={1}
                     preview=".img-preview"
@@ -232,16 +232,16 @@ export const InputCoordinates: React.FC = () => {
           <div className="flex flex-row w-full justify-between mb-[2rem] mt-[1rem]">
             <button
               onClick={handleBack}
-              className=" flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
-            >
+              className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[2rem] mb-[2rem]"
+          >
               <FaAngleLeft></FaAngleLeft>
               <p>Back</p>
             </button>
 
             <button
               onClick={getCropData}
-              className=" font-medium items-center justify-center flex flex-row gap-2  text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mx-[2rem]"
-            >
+              className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[2rem] mb-[2rem]"
+        >
               <p>Crop</p>
               <FaCropSimple></FaCropSimple>
             </button>
@@ -254,7 +254,7 @@ export const InputCoordinates: React.FC = () => {
                   Area of Interest
                 </h3>
                 <img
-                  className="w-[20rem] h-[20rem] sm:w-[25rem] sm:h-[25rem] object-contain m-5"
+                  className="w-[18rem] h-[18rem] sm:w-[25rem] sm:h-[25rem] object-contain m-5"
                   src={cropData}
                   alt="cropped"
                 />
@@ -262,15 +262,15 @@ export const InputCoordinates: React.FC = () => {
                 <div className="flex flex-row justify-between mb-[2rem]">
                   <button
                     onClick={toggleModal}
-                    className="font-medium justify-center items-center flex flex-row gap-2 text-xl text-white bg-pink rounded-xl px-[2rem] p-2 mx-[2rem]"
-                  >
+                    className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-pink rounded-xl px-[1rem] p-1 sm:p-2 mr-[3rem] sm:mr-[1rem] mb-[2rem]"
+          >
                     <p>Redo</p>
                     <FaArrowRotateRight className="rotate-90"></FaArrowRotateRight>
                   </button>
                   <button
                     onClick={handleConfirm}
-                    className=" flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mx-[2rem]"
-                  >
+                    className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 ml-[3rem] sm:m1-[1rem] mb-[2rem]"
+        >
                     <p> Confirm</p>
                     <FaCheck></FaCheck>
                   </button>
