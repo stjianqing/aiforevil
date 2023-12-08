@@ -9,13 +9,19 @@ export const FCResults: React.FC = () => {
   const [date1, setDate1] = useState(router.query.date1);
   const [date2, setDate2] = useState(router.query.date2);
   const [image, setImage] = useState('');
+  const [percentChange, setPercentChange] = useState('');
 
   async function getImg(){
     const res = await fetch(`http://127.0.0.1:5000/api/get-difference`,{
       method: 'GET',
     })
-      .then(res => res.json())
-      .then(data => {setImage(data.url)})
+    if (res.ok) {
+      const data = await res.json();
+      setImage(data.url);
+      setPercentChange(data.area_different_percentage);
+    } else {
+      console.error('Request failed with status:', res.status);
+    }
   }
 
   function handleBack() {
@@ -96,6 +102,7 @@ export const FCResults: React.FC = () => {
 
           <div>
             <DownloadButton fileUrl={'https://storage.googleapis.com/aiforevil/output.shp.zip'}/>
+            <p className = "text-xl text-black p-[1rem] mt-[3rem] font-bold">% Change: {percentChange} </p>
           </div>
       </div>
 

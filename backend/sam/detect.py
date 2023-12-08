@@ -249,9 +249,12 @@ class EdgeDetector():
 
         total_area = self.multipolygon.area
         area_difference = difference.area
-        area_difference_percentage = area_difference / total_area * 100
-        if self.multipolygon.area < self.compare_shapefile.area:
-            area_difference_percentage *= -1
+        if total_area == 0:
+            area_difference_percentage = 0
+        else:
+            area_difference_percentage = area_difference / total_area * 100
+            if self.multipolygon.area < self.compare_shapefile.area:
+                area_difference_percentage *= -1
 
         try:
             with fiona.open('./img/comparison_output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
@@ -277,6 +280,7 @@ class EdgeDetector():
         return area_difference_percentage
 
     def run(self, img_path=None, compare_segment=None, compare_shapefile=None):
+        area_difference_percentage = None
         self.img_path = img_path
         self.TIF = self.img_path.endswith('.tif')
         if compare_segment is not None:
@@ -295,10 +299,10 @@ class EdgeDetector():
 if __name__ == "__main__":
     sam_checkpoint = "./sam/model/sam_vit_l_0b3195.pth"
     model_type = "vit_l"
-    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (16).tif" # cat tien
+    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (22).tif" # cat tien
     # img_path = "C:/Users/ruiya/Desktop/aiforevil/backend/img/cropped_image.tif" # cuc phuong
     edge_detector = EdgeDetector(sam_checkpoint, model_type)
     segment, multipolygon, _ = edge_detector.run(img_path)
 
-    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
-    edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
+    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
+    # edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
