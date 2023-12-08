@@ -224,8 +224,10 @@ class EdgeDetector():
         Compares the alpha channel of the image with a given segment and generates a segmented image.
         Saves the segmented image (comparison) and shapefile
 
+        Calculates the percent changes in area between the two dates.
+
         Returns:
-            None
+            area_difference_percent: The percent change in area between the two dates.
         """
         assert self.alpha.shape == self.compare_segment.shape, ValueError("Shape mismatch")
 
@@ -245,11 +247,24 @@ class EdgeDetector():
         difference = self.multipolygon.difference(self.compare_shapefile)
         union = self.multipolygon.union(self.compare_shapefile)
 
+        total_area = self.multipolygon.area
+        area_difference = difference.area
+        if total_area == 0:
+            area_difference_percentage = 0
+        else:
+            area_difference_percentage = area_difference / total_area * 100
+            if self.multipolygon.area < self.compare_shapefile.area:
+                area_difference_percentage *= -1
+
         try:
-            with fiona.open('./img/output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
+            with fiona.open('./img/comparison_output.shp.zip', 'w', 'ESRI Shapefile', self.schema) as c:
                 c.write({
-                    'geometry': mapping(self.multipolygon),
-                    'properties': {'id': 0, 'name':'segmented shape'},
+                    'geometry': mapping(difference),
+                    'properties': {'id': 0, 'name': 'difference'},
+                })
+                c.write({
+                    'geometry': mapping(union),
+                    'properties': {'id': 1, 'name': 'union'},
                 })
         except fiona.errors.DriverError:
             os.remove('./img/comparison_output.shp.zip')
@@ -262,8 +277,10 @@ class EdgeDetector():
                     'geometry': mapping(union),
                     'properties': {'id': 1, 'name': 'union'},
                 })
+        return area_difference_percentage
 
     def run(self, img_path=None, compare_segment=None, compare_shapefile=None):
+        area_difference_percentage = None
         self.img_path = img_path
         self.TIF = self.img_path.endswith('.tif')
         if compare_segment is not None:
@@ -275,17 +292,17 @@ class EdgeDetector():
         self._process()
         if self.compare:
             print('Comparing...')
-            self._compare()
+            area_difference_percentage = self._compare()
         print('Finished!')
-        return self.alpha, self.multipolygon
+        return self.alpha, self.multipolygon, area_difference_percentage
 
 if __name__ == "__main__":
     sam_checkpoint = "./sam/model/sam_vit_l_0b3195.pth"
     model_type = "vit_l"
-    # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (12).tif" # cat tien
-    img_path = "C:/Users/ruiya/Desktop/aiforevil/backend/img/cropped_image.tif" # cuc phuong
+    img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (22).tif" # cat tien
+    # img_path = "C:/Users/ruiya/Desktop/aiforevil/backend/img/cropped_image.tif" # cuc phuong
     edge_detector = EdgeDetector(sam_checkpoint, model_type)
-    segment, multipolygon = edge_detector.run(img_path)
+    segment, multipolygon, _ = edge_detector.run(img_path)
 
     # img_path = "C:/Users/ruiya/Downloads/s2_sr_median_export (17).tif" # cuc phuong
     # edge_detector.run(img_path=img_path, compare_segment=segment, compare_shapefile=multipolygon)
