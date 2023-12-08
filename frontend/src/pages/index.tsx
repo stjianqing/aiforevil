@@ -132,7 +132,7 @@ export const Home: React.FC = () => {
                 <p>
                   <b> We will return you:</b>
                   <ul>
-                    <li>(1) images of your forest boundary</li>{" "}
+                    <li>(1) image of your overlayed forest boundaries</li>{" "}
                     <li>(2) shape (.SHP) files</li>
                     <li>(3) boundary change data</li>
                   </ul>
