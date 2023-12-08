@@ -88,13 +88,13 @@ export const CFCoordinate: React.FC = () => {
         </svg>
       </div>
 
-      <p className="flex flex-row justify-center mx-[1rem] sm:text-2xl">
+      <p className="flex flex-row justify-center items-center mx-[1rem] sm:text-2xl">
         Search for your forest or enter coordinates manually
       </p>
       <div className="flex flex-row w-5/6 flex-wrap justify-between p-[1rem]">
-        <div className="flex flex-col px-[2rem] mx-[2rem]">
+        <div className="flex flex-col px-[2rem] mx-[2rem] justify-center">
           {/* <SearchBoc updateCoordinates={updateCoordinates} /> */}
-          <DynamicSearchBox updateCoordinates={updateCoordinates} />
+          <DynamicSearchBox updateCoordinates={updateCoordinates}/>
         </div>
         <div className="flex justify-center flex-col px-[1rem] pt-[2rem]">
           <div className="flex flex-row">
@@ -127,14 +127,14 @@ export const CFCoordinate: React.FC = () => {
       <div className="flex flex-row w-full justify-between ">
         <button
           onClick={handleBack}
-          className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[2rem] mb-[2rem]"
         >
           <FaAngleLeft></FaAngleLeft>
           Back
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[2rem] mb-[2rem]"
         >
           Confirm <FaCheck></FaCheck>
         </button>

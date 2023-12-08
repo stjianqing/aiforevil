@@ -137,76 +137,81 @@ export const InputCoordinates: React.FC = () => {
 
   if (typeof document !== "undefined") {
     return (
-      <div className="flex w-screen h-screen flex-col pt-[2rem] ">
-        <h1 className="text-black text-6xl justify-center flex font-semibold p-3 mx-[3rem]">
-          Forest Change
-        </h1>
-        <div className="flex flex-row w-full px-3">
-          <svg
-            height="6"
-            viewBox="0 0 423 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="fill-pink w-1/4 m-[1rem]"
-          >
-            <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
-          </svg>
+      <>
+        {" "}
+        {cropped ? (
+          <div className="w-screen h-screen bg-black opacity-70 fixed"></div>
+        ) : null}
+        <div className="flex w-screen h-screen flex-col pt-[2rem] ">
+          <h1 className="text-black sm:text-5xl text-2xl justify-center flex font-semibold p-3 mx-[3rem]">
+            Forest Change
+          </h1>
+          <div className="flex flex-row w-full px-3">
+            <svg
+              height="6"
+              viewBox="0 0 423 6"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="fill-pink w-1/4 m-[1rem]"
+            >
+              <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
+            </svg>
 
-          <svg
-            height="6"
-            viewBox="0 0 423 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="fill-pink w-1/4 m-[1rem] "
-          >
-            <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
-          </svg>
-          <svg
-            height="6"
-            viewBox="0 0 423 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="fill-pink w-1/4 m-[1rem] "
-          >
-            <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
-          </svg>
+            <svg
+              height="6"
+              viewBox="0 0 423 6"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="fill-pink w-1/4 m-[1rem] "
+            >
+              <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
+            </svg>
+            <svg
+              height="6"
+              viewBox="0 0 423 6"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="fill-pink w-1/4 m-[1rem] "
+            >
+              <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
+            </svg>
 
-          <svg
-            height="6"
-            viewBox="0 0 423 6"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="fill-gray w-1/4 m-[1rem]"
-          >
-            <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
-          </svg>
-        </div>
+            <svg
+              height="6"
+              viewBox="0 0 423 6"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="fill-gray w-1/4 m-[1rem]"
+            >
+              <path d="M422.8 0.808594H7.77557L0.0341797 5.72677H415.059L422.8 0.808594Z" />
+            </svg>
+          </div>
         <div>
           <div className="flex p-1 flex-wrap justify-around w-full">
             <div className="flex items-start">
               <div className="flex flex-col">
-                <p className="flex flex-row font-semibold text-lg">
+                <p className="flex flex-row font-semibold text-md sm:text-lg">
                   Latitude:{" "}
                 </p>
-                <p className="flex flex-row w-fit font-semibold text-lg">
+                <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
                   Longtitude:
                 </p>
-                <p className="flex flex-row w-fit font-semibold text-lg">
+                <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
                   Date 1:
                 </p>
-                <p className="flex flex-row w-fit font-semibold text-lg">
+                <p className="flex flex-row w-fit font-semibold text-md sm:text-lg">
                   Date 2:
                 </p>
               </div>
               <div className="flex flex-col w-fit ml-[1rem]">
-                <p className="flex flex-row w-fit text-lg"> {latitude}</p>
-                <p className="flex flex-row w-fit text-lg"> {longitude}</p>
-                <p className="flex flex-row w-fit text-lg"> {date1}</p>
-                <p className="flex flex-row w-fit text-lg"> {date2}</p>
+                <p className="flex flex-row w-fit text-md sm:text-lg"> {latitude}</p>
+                <p className="flex flex-row w-fit text-md sm:text-lg"> {longitude}</p>
+                <p className="flex flex-row w-fit text-md sm:text-lg"> {date1}</p>
+                <p className="flex flex-row w-fit text-md sm:text-lg"> {date2}</p>
               </div>
             </div>
             <div className="flex flex-col mx-[1rem] items-center">
-              <p className="text-2xl text-black p-[1rem] ">
+              <p className="text-xl sm:text-2xl text-black p-[1rem] ">
                 Crop to your area of interest
               </p>
               <div className="flex flex-row  ">
@@ -235,14 +240,14 @@ export const InputCoordinates: React.FC = () => {
         <div className="flex flex-row w-full justify-between mb-[2rem] mt-[1rem]">
           <button
             onClick={handleBack}
-            className=" font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 mx-[2rem]"
-          >
+            className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[3rem]"
+        >
             Back
           </button>
           <button
             onClick={getCropData}
-            className=" font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mx-[2rem]"
-          >
+            className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[3rem]"
+        >
             Crop
           </button>
         </div>
@@ -260,14 +265,14 @@ export const InputCoordinates: React.FC = () => {
               <div className="flex flex-row justify-between mb-[1rem]">
                 <button
                   onClick={toggleModal}
-                  className="font-medium text-xl text-white bg-pink rounded-xl px-[3rem] p-2 mx-[2rem]"
-                >
+                  className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-pink rounded-xl px-[1rem] p-1 sm:p-2 mr-[3rem]"
+        >
                   Redo
                 </button>
                 <button
                   onClick={handleConfirm}
-                  className=" font-medium text-xl text-white bg-purple rounded-xl px-[2rem] mx-[2rem] p-2"
-                >
+                  className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 ml-[3rem]"
+        >
                   Confirm
                 </button>
               </div>
@@ -275,6 +280,7 @@ export const InputCoordinates: React.FC = () => {
           </div>
         ) : null}
       </div>
+      </>
     );
   }
 };

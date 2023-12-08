@@ -169,7 +169,7 @@ export default function SearchBox({ updateCoordinates }) {
 
   return (
     <>
-      <form className="flex flex-col">
+      <form className="flex flex-col justify-center">
         <MapboxSearchBox
           value=""
           onRetrieve={handleSelectLocation}
