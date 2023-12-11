@@ -15,12 +15,12 @@ export const FCResults: React.FC = () => {
   const [image, setImage] = useState('');
 
   async function getImg(){
-    // const res = await fetch(`http://127.0.0.1:5000/api/get-segment`,{
-    //   method: 'GET',
-    // })
-    //   .then(res => res.json())
-    //   .then(data => {setImage(data.url)})
-    setImage(defaultSrc)
+    const res = await fetch(`http://127.0.0.1:5000/api/get-segment`,{
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => {setImage(data.url)})
+    // setImage(defaultSrc)
   }
 
   function handleBack() {

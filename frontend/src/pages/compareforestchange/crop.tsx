@@ -29,12 +29,12 @@ export const InputCoordinates: React.FC = () => {
   });
 
   async function getImg() {
-    // const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
-    //   method: 'GET',
-    // })
-    //   .then(res => res.json())
-    //   .then(data => {setImage(data.url)})
-    setImage(defaultSrc);
+    const res = await fetch(`http://127.0.0.1:5000/api/get-img`,{
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(data => {setImage(data.url)})
+    // setImage(defaultSrc);
   }
 
   async function handleConfirm() {
@@ -44,23 +44,23 @@ export const InputCoordinates: React.FC = () => {
     body.x2 = croppedCoords.x2;
     body.y2 = croppedCoords.y2;
     body.date = date1;
-    // const req1 = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(body)
-    // });
+    const req1 = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    });
 
-    // body.date = date2
-    // body.compare = 1
-    // const req2 = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(body)
-    // });
+    body.date = date2
+    body.compare = 1
+    const req2 = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    });
 
     router.push({
       pathname: "/compareforestchange/results",
