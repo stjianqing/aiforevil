@@ -36,18 +36,22 @@ export const Home: React.FC = () => {
   function toggleFindForestModal() {
     if (FFInfo === false) {
       setFFInfo(true);
+      setFCInfo(false);
       setDark(true);
     } else {
       setFFInfo(false);
       setDark(false);
+      setFCInfo(false);
     }
   }
 
   function toggleForestChangeModal() {
     if (FCInfo === false) {
+      setFFInfo(false);
       setFCInfo(true);
       setDark(true);
     } else {
+      setFFInfo(false);
       setFCInfo(false);
       setDark(false);
     }
@@ -69,12 +73,13 @@ export const Home: React.FC = () => {
         <div className="w-screen h-screen flex justify-center items-center  absolute">
           <div className="bg-black h-screen w-screen absolute z-10 opacity-70 "></div>
           <div className="h-1/2 w-5/6 sm:w-1/2 bg-white absolute rounded-lg z-20  items-center flex flex-col overflow-scroll">
-            <div className="h-fit w-full justify-end flex p-2">
-              <button onClick={toggleFindForestModal}>
-                <FaX></FaX>
-              </button>
-            </div>
             {FFInfo ? (
+              <>
+               <div className="h-fit w-full justify-end flex p-2">
+               <button onClick={toggleFindForestModal}>
+                 <FaX></FaX>
+               </button>
+             </div>
               <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
                 <p className="text-2xl">Forest Find</p>
                 <p>
@@ -105,8 +110,15 @@ export const Home: React.FC = () => {
                   </ul>
                 </p>
               </div>
+              </>
             ) : null}
             {FCInfo ? (
+              <>
+              <div className="h-fit w-full justify-end flex p-2">
+              <button onClick={toggleForestChangeModal}>
+                <FaX></FaX>
+              </button>
+            </div>
               <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
                 <p className="text-2xl">Forest Change</p>
                 <p>
@@ -138,6 +150,7 @@ export const Home: React.FC = () => {
                   </ul>
                 </p>
               </div>
+              </>
             ) : null}
             {TSInfo ? (
               <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
@@ -175,6 +188,8 @@ export const Home: React.FC = () => {
             ) : null}
           </div>
         </div>
+
+ 
       ) : null}
       <div className="flex w-screen h-screen flex-col sm:justify-center  items-center sm:pt-[1rem] pt-[2rem]  overflow-scroll">
         <div className="flex flex-row items-center">
