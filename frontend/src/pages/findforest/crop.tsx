@@ -34,13 +34,13 @@ export const InputCoordinates: React.FC = () => {
     body.x2 = croppedCoords.x2;
     body.y2 = croppedCoords.y2;
     body.date = date;
-    // const req = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
-    //   method: 'POST',
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(body)
-    // });
+    const req = await fetch('http://127.0.0.1:5000/api/cropped-coord',{
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body)
+    });
 
     router.push({
       pathname: "/findforest/results",
