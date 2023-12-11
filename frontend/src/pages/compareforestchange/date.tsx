@@ -11,20 +11,20 @@ export const FCDate: React.FC = () => {
   const [date2, setDate2] = useState("");
 
   async function handleConfirm() {
-    const req1 = await fetch("http://127.0.0.1:5000/api/location-coord", {
-      method: "POST",
+    const req1 = await fetch('http://127.0.0.1:5000/api/location-coord',{
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ latitude, longitude, date: date1 }),
+      body: JSON.stringify({latitude, longitude, date: date1})
     });
 
-    const req2 = await fetch("http://127.0.0.1:5000/api/location-coord", {
-      method: "POST",
+    const req2 = await fetch('http://127.0.0.1:5000/api/location-coord',{
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ latitude, longitude, date: date2 }),
+      body: JSON.stringify({latitude, longitude, date: date2})
     });
 
     router.push({
@@ -116,7 +116,7 @@ export const FCDate: React.FC = () => {
       </p>
 
       <div className="flex flex-row flex-wrap justify-center mt-[2rem]">
-        <div className="flex flex-col mt-[1rem] mx-[5rem] ">
+        <div className="flex flex-col mt-[1rem] mx-[3rem] ">
           <label className=" text-lg sm:text-3xl font-medium">Date 1: </label>
           <input
             className="my-[1rem]  text-lg sm:text-xl border-black border rounded-lg p-[0.5rem]"
@@ -124,10 +124,10 @@ export const FCDate: React.FC = () => {
             onChange={handleDate1Change}
           ></input>
         </div>
-        <div className="flex flex-col mt-[1rem] justify-center mx-[5rem]">
+        <div className="flex flex-col mt-[1rem] justify-center mx-[3rem]">
           <label className=" text-lg sm:text-3xl font-medium">Date 2: </label>
           <input
-            className="my-[1rem]  text-lg sm:text-xl border-black border rounded-lg p-[0.5rem]"
+            className="my-[1rem] text-lg sm:text-xl border-black border rounded-lg p-[0.5rem]"
             type="date"
             onChange={handleDate2Change}
           ></input>
@@ -139,14 +139,14 @@ export const FCDate: React.FC = () => {
       <div className="flex flex-row w-full justify-between mt-[1rem] mb-[3rem]">
         <button
           onClick={handleBack}
-          className="mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
-        >
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[2rem] mb-[2rem]"
+          >
           <FaAngleLeft></FaAngleLeft>
           <p>Back</p>
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem] mb-[3rem]"
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[2rem] mb-[2rem]"
         >
           <p>Confirm</p>
           <FaCheck></FaCheck>

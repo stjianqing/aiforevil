@@ -8,6 +8,7 @@ import FC from "public/compare.svg";
 import TS from "public/series.svg";
 import FF_gif from "public/findForest.gif";
 import FC_gif from "public/compare.gif";
+import logo from "public/logo.svg";
 
 export const Home: React.FC = () => {
   const router = useRouter();
@@ -35,18 +36,22 @@ export const Home: React.FC = () => {
   function toggleFindForestModal() {
     if (FFInfo === false) {
       setFFInfo(true);
+      setFCInfo(false);
       setDark(true);
     } else {
       setFFInfo(false);
       setDark(false);
+      setFCInfo(false);
     }
   }
 
   function toggleForestChangeModal() {
     if (FCInfo === false) {
+      setFFInfo(false);
       setFCInfo(true);
       setDark(true);
     } else {
+      setFFInfo(false);
       setFCInfo(false);
       setDark(false);
     }
@@ -68,12 +73,13 @@ export const Home: React.FC = () => {
         <div className="w-screen h-screen flex justify-center items-center  absolute">
           <div className="bg-black h-screen w-screen absolute z-10 opacity-70 "></div>
           <div className="h-1/2 w-5/6 sm:w-1/2 bg-white absolute rounded-lg z-20  items-center flex flex-col overflow-scroll">
-            <div className="h-fit w-full justify-end flex p-2">
-              <button onClick={toggleFindForestModal}>
-                <FaX></FaX>
-              </button>
-            </div>
             {FFInfo ? (
+              <>
+               <div className="h-fit w-full justify-end flex p-2">
+               <button onClick={toggleFindForestModal}>
+                 <FaX></FaX>
+               </button>
+             </div>
               <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
                 <p className="text-2xl">Forest Find</p>
                 <p>
@@ -104,8 +110,15 @@ export const Home: React.FC = () => {
                   </ul>
                 </p>
               </div>
+              </>
             ) : null}
             {FCInfo ? (
+              <>
+              <div className="h-fit w-full justify-end flex p-2">
+              <button onClick={toggleForestChangeModal}>
+                <FaX></FaX>
+              </button>
+            </div>
               <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
                 <p className="text-2xl">Forest Change</p>
                 <p>
@@ -131,12 +144,13 @@ export const Home: React.FC = () => {
                 <p>
                   <b> We will return you:</b>
                   <ul>
-                    <li>(1) images of your forest boundary</li>{" "}
+                    <li>(1) image of your overlayed forest boundaries</li>{" "}
                     <li>(2) shape (.SHP) files</li>
                     <li>(3) boundary change data</li>
                   </ul>
                 </p>
               </div>
+              </>
             ) : null}
             {TSInfo ? (
               <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
@@ -174,9 +188,19 @@ export const Home: React.FC = () => {
             ) : null}
           </div>
         </div>
+
+ 
       ) : null}
       <div className="flex w-screen h-screen flex-col sm:justify-center  items-center sm:pt-[1rem] pt-[2rem]  overflow-scroll">
-        <h1 className="text-2xl sm:text-7xl p-3 ">ForestFind</h1>
+        <div className="flex flex-row items-center">
+          <h1 className="text-2xl sm:text-7xl p-3 ">ForestFind</h1>
+          <Image
+            src={logo}
+            width={20}
+            height={20}
+            className="sm:w-[4rem] sm:h-[4rem] w-[1.5rem] h-[1.5rem]"
+          ></Image>
+        </div>
         <p className=" w-5/6 sm:w-4/6 text-sm sm:text-xl p-3">
           Whether you're an environmental enthusiast, a conservationist, a
           forestry professional, or just a curious nature lover, ForestFind
@@ -245,7 +269,7 @@ export const Home: React.FC = () => {
               <p className="flex justify-center  text-lg sm:text-xl font-medium ">
                 Forest Series
               </p>
-              <button onClick={toggleTimeSeriesModal}>
+              <button onClick={toggleTimeSeriesModal} disabled>
                 <FaRegCircleQuestion className="sm:h-[1.5rem] sm:w-[1.5rem]"></FaRegCircleQuestion>
               </button>
             </div>

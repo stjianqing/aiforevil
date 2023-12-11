@@ -1,6 +1,10 @@
 import React, { useState, useEffect} from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import html2pdf from 'html2pdf.js';
+const defaultSrc = "/compare.jpg";
+import { FaHome } from "react-icons/fa";
+import { FaAngleLeft } from "react-icons/fa6";
 
 export const FCResults: React.FC = () => {
   const router = useRouter();
@@ -11,11 +15,12 @@ export const FCResults: React.FC = () => {
   const [image, setImage] = useState('');
 
   async function getImg(){
-    const res = await fetch(`http://127.0.0.1:5000/api/get-difference`,{
+    const res = await fetch(`http://127.0.0.1:5000/api/get-segment`,{
       method: 'GET',
     })
       .then(res => res.json())
       .then(data => {setImage(data.url)})
+    // setImage(defaultSrc)
   }
 
   function handleBack() {
@@ -51,7 +56,7 @@ export const FCResults: React.FC = () => {
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] items-center  ">
-      <h1 className="text-black text-6xl justify-center flex font-semibold p-3">
+      <h1 className="text-black sm:text-5xl text-2xl  justify-center flex font-semibold p-3">
         Forest Change
       </h1>
       <div className = "flex flex-row w-full px-3">
@@ -96,23 +101,27 @@ export const FCResults: React.FC = () => {
 
           <div>
             <DownloadButton fileUrl={'https://storage.googleapis.com/aiforevil/output.shp.zip'}/>
+            <p className = "text-xl text-black p-[1rem] mt-[3rem] font-bold">% Change: 0 </p>
+  
           </div>
       </div>
 
-      <div className = "flex flex-row w-full justify-between mb-[3rem]">
+      <div className="flex flex-row w-full justify-between mb-[3rem]">
         <button
           onClick={handleBack}
-          className="mt-[5rem] font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
-        >
-          Back
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[2rem] mb-[2rem]"
+          >
+          <FaAngleLeft></FaAngleLeft>
+          <p>Back</p>
         </button>
         <button
           onClick={handleHome}
-          className="mt-[5rem] font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem]"
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[2rem] mb-[2rem]"
         >
-          Home
+          <p>Home</p>
+          <FaHome></FaHome>
         </button>
-      </div>
+    </div>
     </div>
   );
 };

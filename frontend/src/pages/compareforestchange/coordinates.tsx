@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import SearchBoc from "@/components/searchbox";
 import { FaCheck } from "react-icons/fa6";
 import { FaAngleLeft } from "react-icons/fa6";
+import dynamic from "next/dynamic";
 
 export const CFCoordinate: React.FC = () => {
   const [latitude, setLatitude] = useState();
@@ -22,6 +23,10 @@ export const CFCoordinate: React.FC = () => {
     console.log(latitude, longitude);
   };
 
+  const DynamicSearchBox = dynamic(() => import("@/components/searchbox"), {
+    loading: () => <p>Loading...</p>,
+    ssr: false,
+  });
   function handleConfirm() {
     router.push({
       pathname: "/compareforestchange/date",
@@ -34,10 +39,12 @@ export const CFCoordinate: React.FC = () => {
       pathname: "/",
     });
   }
+  // if (typeof document !== "undefined") {
+  // you are safe to use the "document" object here
 
   return (
     <div className="flex w-screen h-screen flex-col pt-[2rem] ">
-      <h1 className="text-black sm:text-5xl text-2xl justify-center items-center flex font-semibold p-3  mx-[1rem] sm:mx-[3rem]">
+      <h1 className="text-black sm:text-5xl text-2xl justify-center items-center flex font-semibold p-3 mx-[1rem] sm:mx-[3rem]">
         Forest Change
       </h1>
       <div className="flex flex-row w-full justify-center items-center">
@@ -81,12 +88,13 @@ export const CFCoordinate: React.FC = () => {
         </svg>
       </div>
 
-      <p className="flex flex-row justify-center m-[1rem] sm:text-2xl">
+      <p className="flex flex-row justify-center items-center mx-[1rem] sm:text-2xl">
         Search for your forest or enter coordinates manually
       </p>
       <div className="flex flex-row w-5/6 flex-wrap justify-between p-[1rem]">
-        <div className="flex flex-col px-[2rem] mx-[2rem]">
-          <SearchBoc updateCoordinates={updateCoordinates} />
+        <div className="flex flex-col px-[2rem] mx-[2rem] justify-center">
+          {/* <SearchBoc updateCoordinates={updateCoordinates} /> */}
+          <DynamicSearchBox updateCoordinates={updateCoordinates}/>
         </div>
         <div className="flex justify-center flex-col px-[1rem] pt-[2rem]">
           <div className="flex flex-row">
@@ -119,14 +127,14 @@ export const CFCoordinate: React.FC = () => {
       <div className="flex flex-row w-full justify-between ">
         <button
           onClick={handleBack}
-          className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[2rem] mb-[2rem]"
         >
           <FaAngleLeft></FaAngleLeft>
           Back
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[1rem] sm:mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem] mb-[3rem]"
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[2rem] mb-[2rem]"
         >
           Confirm <FaCheck></FaCheck>
         </button>
@@ -134,5 +142,6 @@ export const CFCoordinate: React.FC = () => {
     </div>
   );
 };
+// };
 
 export default CFCoordinate;

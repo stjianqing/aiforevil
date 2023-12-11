@@ -116,15 +116,15 @@ export const FFDate: React.FC = () => {
       <div className="flex flex-row w-full justify-between mt-[1rem] mb-[3rem]">
         <button
           onClick={handleBack}
-          className="mt-[5rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-xl text-white bg-green rounded-xl px-[1rem] p-2 ml-[3rem]"
-        >
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit flex-row justify-center items-center gap-2 font-medium text-md sm:text-xl text-white bg-green rounded-xl px-[1rem] p-1 sm:p-2 ml-[2rem] mb-[2rem]"
+          >
           <FaAngleLeft></FaAngleLeft>
           <p>Back</p>
         </button>
         <button
           onClick={handleConfirm}
-          className="mt-[5rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-xl text-white bg-purple rounded-xl px-[1rem] p-2 mr-[3rem] mb-[3rem]"
-        >
+          className="mt-[1rem] sm:mt-[3rem] flex h-fit w-fit justify-center items-center gap-2 flex-row  font-medium text-md sm:text-xl text-white bg-purple rounded-xl px-[1rem] p-1 sm:p-2 mr-[2rem] mb-[2rem]"
+          >
           <p>Confirm</p>
           <FaCheck></FaCheck>
         </button>
