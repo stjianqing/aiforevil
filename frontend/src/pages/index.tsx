@@ -75,81 +75,81 @@ export const Home: React.FC = () => {
           <div className="h-1/2 w-5/6 sm:w-1/2 bg-white absolute rounded-lg z-20  items-center flex flex-col overflow-scroll">
             {FFInfo ? (
               <>
-               <div className="h-fit w-full justify-end flex p-2">
-               <button onClick={toggleFindForestModal}>
-                 <FaX></FaX>
-               </button>
-             </div>
-              <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
-                <p className="text-2xl">Forest Find</p>
-                <p>
-                  Forest Find is a tool to help you find the boundaries of your
-                  forest.
-                </p>
-                <div className="flex flex-row w-full justify-center">
-                  <Image
-                    src={FF_gif}
-                    alt="find forest"
-                    width={20}
-                    height={20}
-                    className="w-[20rem] h-full border-2 border-black"
-                  ></Image>
+                <div className="h-fit w-full justify-end flex p-2">
+                  <button onClick={toggleFindForestModal}>
+                    <FaX></FaX>
+                  </button>
                 </div>
-                <p>
-                  <b>Give us:</b>
-                  <ul>
-                    <li>(1) coordinates of your forest</li>
-                    <li> (2) a date of interest</li>
-                  </ul>
-                </p>
-                <p>
-                  <b> We will return you:</b>
-                  <ul>
-                    <li>(1) image of your forest boundary</li>{" "}
-                    <li>(2) shape (.SHP) file</li>
-                  </ul>
-                </p>
-              </div>
+                <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
+                  <p className="text-2xl">Forest Find</p>
+                  <p>
+                    Forest Find is a tool to help you find the boundaries of
+                    your forest.
+                  </p>
+                  <div className="flex flex-row w-full justify-center">
+                    <Image
+                      src={FF_gif}
+                      alt="find forest"
+                      width={20}
+                      height={20}
+                      className="w-[20rem] h-full border-2 border-black"
+                    ></Image>
+                  </div>
+                  <p>
+                    <b>Give us:</b>
+                    <ul>
+                      <li>(1) coordinates of your forest</li>
+                      <li> (2) a date of interest</li>
+                    </ul>
+                  </p>
+                  <p>
+                    <b> We will return you:</b>
+                    <ul>
+                      <li>(1) image of your forest boundary</li>{" "}
+                      <li>(2) shape (.SHP) file</li>
+                    </ul>
+                  </p>
+                </div>
               </>
             ) : null}
             {FCInfo ? (
               <>
-              <div className="h-fit w-full justify-end flex p-2">
-              <button onClick={toggleForestChangeModal}>
-                <FaX></FaX>
-              </button>
-            </div>
-              <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
-                <p className="text-2xl">Forest Change</p>
-                <p>
-                  Forest Change is a tool to help you compare the changes in in
-                  the boundaries of your forest across two separate dates
-                </p>
-                <div className="flex flex-row w-full justify-center">
-                  <Image
-                    src={FC_gif}
-                    alt="find forest"
-                    width={20}
-                    height={20}
-                    className="w-[20rem] h-full border-2 border-black"
-                  ></Image>
+                <div className="h-fit w-full justify-end flex p-2">
+                  <button onClick={toggleForestChangeModal}>
+                    <FaX></FaX>
+                  </button>
                 </div>
-                <p>
-                  <b>Give us:</b>
-                  <ul>
-                    <li>(1) coordinates of your forest</li>
-                    <li> (2) two dates of interest</li>
-                  </ul>
-                </p>
-                <p>
-                  <b> We will return you:</b>
-                  <ul>
-                    <li>(1) image of your overlayed forest boundaries</li>{" "}
-                    <li>(2) shape (.SHP) files</li>
-                    <li>(3) boundary change data</li>
-                  </ul>
-                </p>
-              </div>
+                <div className="w-11/12 flex-col flex gap-2 mb-[1rem]">
+                  <p className="text-2xl">Forest Change</p>
+                  <p>
+                    Forest Change is a tool to help you compare the changes in
+                    in the boundaries of your forest across two separate dates
+                  </p>
+                  <div className="flex flex-row w-full justify-center">
+                    <Image
+                      src={FC_gif}
+                      alt="find forest"
+                      width={20}
+                      height={20}
+                      className="w-[20rem] h-full border-2 border-black"
+                    ></Image>
+                  </div>
+                  <p>
+                    <b>Give us:</b>
+                    <ul>
+                      <li>(1) coordinates of your forest</li>
+                      <li> (2) two dates of interest</li>
+                    </ul>
+                  </p>
+                  <p>
+                    <b> We will return you:</b>
+                    <ul>
+                      <li>(1) image of your overlayed forest boundaries</li>{" "}
+                      <li>(2) shape (.SHP) files</li>
+                      <li>(3) boundary change data</li>
+                    </ul>
+                  </p>
+                </div>
               </>
             ) : null}
             {TSInfo ? (
@@ -188,8 +188,6 @@ export const Home: React.FC = () => {
             ) : null}
           </div>
         </div>
-
- 
       ) : null}
       <div className="flex w-screen h-screen flex-col sm:justify-center  items-center sm:pt-[1rem] pt-[2rem]  overflow-scroll">
         <div className="flex flex-row items-center">
@@ -201,10 +199,19 @@ export const Home: React.FC = () => {
             className="sm:w-[4rem] sm:h-[4rem] w-[1.5rem] h-[1.5rem]"
           ></Image>
         </div>
-        <p className=" w-5/6 sm:w-4/6 text-sm sm:text-xl p-3">
-          Whether you're an environmental enthusiast, a conservationist, a
+        <p className=" w-5/6 sm:w-4/6 text-sm sm:text-xl p-0 sm:p-3">
+          {/* Whether you're an environmental enthusiast, a conservationist, a
           forestry professional, or just a curious nature lover, ForestFind
-          allows you to track and compare forest boundaries over time.
+          allows you to track and compare forest boundaries over time. */}
+          Conservationists face a significant challenge in obtaining precise
+          data, particularly when it comes to assessing the impact of factors
+          such as defortation, urbanization, and forest degradation. Aiforgood
+          ForestFind addresses this challenge by enabling you to measure, track,
+          and compare forest boundaries over time. This tool provides valuable
+          insights that can contribute to the protection and conservation of
+          these vital resources, offering a solution to the difficulties
+          associated with accurately gauging the extent of environmental
+          changes.
         </p>
         <div className="flex flex-row flex-wrap justify-center items-center w-10/12 h-[14rem]  ">
           <div className="flex justify-center items-center h-fit sm:h-full  flex-col m-3">
