@@ -1,4 +1,4 @@
-torch==2.0.1
+torch==2.1.0
 opencv-python==4.8.1.78
 numpy==1.26.0
 segment-anything @ git+https://github.com/facebookresearch/segment-anything.git
@@ -11,5 +11,5 @@ fiona==1.9.5
 Flask-Cors==4.0.0
 google-auth==2.25.1
 google==3.0.0
-earthengine-api==0.1.382
+earthengine-api
 torchvision==0.16.1
