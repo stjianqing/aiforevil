@@ -1,4 +1,4 @@
-# aiforevil :japanese_ogre:
+# aiforgood :japanese_ogre:
 
 
 ## Setting up backend 
